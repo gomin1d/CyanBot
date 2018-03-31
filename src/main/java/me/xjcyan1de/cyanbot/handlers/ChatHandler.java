@@ -82,6 +82,22 @@ public class ChatHandler extends SessionAdapter implements Handler {
                     }
                     break;
                 }
+                case "иди": {
+                    if (args.length != 3) return;
+                    double x = Double.parseDouble(args[1]);
+                    double z = Double.parseDouble(args[2]);
+
+                    player.getSpeed().add(x, 0, z);
+                    break;
+                }
+                case "кружись": {
+                    final int[] yaw = {0};
+                    Schedule.timer(() -> {
+                        player.getLoc().setYaw(yaw[0]);
+                        yaw[0] += 30;
+                    }, 50, 50);
+                    break;
+                }
                 case "deus": {
                     if (args.length == 2 && args[1].equalsIgnoreCase("vult")) {
                         player.sendMessage("Ave Maria!");
