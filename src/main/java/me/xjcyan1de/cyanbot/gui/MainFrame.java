@@ -8,6 +8,7 @@ import me.xjcyan1de.cyanbot.logger.PlayerLogger;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.util.logging.Logger;
 
@@ -22,6 +23,8 @@ public class MainFrame extends JFrame {
     private JTextArea logs;
     private JTextField messageText;
     private JButton sendMessage;
+    private JScrollPane chatScroll;
+    private JScrollPane logsScroll;
     private PlayerManager manager;
     private Logger logger;
 
@@ -30,7 +33,6 @@ public class MainFrame extends JFrame {
         this.logger = logger;
 
         this.setTitle("CyanBot");
-
         setContentPane(contentPane);
 //        setModal(true);
         getRootPane().setDefaultButton(join);
@@ -39,7 +41,7 @@ public class MainFrame extends JFrame {
         logger.addHandler(new FormLoggerHandler(logs));
 
         join.addActionListener(e -> {
-            final Player player = new Player(manager,this,
+            final Player player = new Player(manager, this,
                     new PlayerLogger(name.getText(), logger), name.getText());
             manager.connectPlayer(player, ip.getText(), Integer.parseInt(port.getText()));
             Schedule.later(() -> {
@@ -96,7 +98,7 @@ public class MainFrame extends JFrame {
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.setBorder(BorderFactory.createTitledBorder("Айпи"));
         ip = new JTextField();
-        ip.setText("localhost");
+        ip.setText("mc.JustVillage.ru");
         panel2.add(ip, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         port = new JTextField();
         port.setText("25565");
@@ -119,16 +121,18 @@ public class MainFrame extends JFrame {
         panel5.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel5, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel5.setBorder(BorderFactory.createTitledBorder("Логи"));
-        final JScrollPane scrollPane1 = new JScrollPane();
-        panel5.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 150), null, 0, false));
+        chatScroll = new JScrollPane();
+        chatScroll.setVerticalScrollBarPolicy(22);
+        panel5.add(chatScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 150), null, 0, false));
         chat = new JTextArea();
         chat.setText("чат");
-        scrollPane1.setViewportView(chat);
-        final JScrollPane scrollPane2 = new JScrollPane();
-        panel5.add(scrollPane2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 150), null, 0, false));
+        chatScroll.setViewportView(chat);
+        logsScroll = new JScrollPane();
+        logsScroll.setVerticalScrollBarPolicy(22);
+        panel5.add(logsScroll, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 150), null, 0, false));
         logs = new JTextArea();
-        logs.setText("логи");
-        scrollPane2.setViewportView(logs);
+        logs.setText("логи\n");
+        logsScroll.setViewportView(logs);
     }
 
     /**

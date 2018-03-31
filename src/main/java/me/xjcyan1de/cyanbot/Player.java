@@ -59,7 +59,7 @@ public class Player {
         this.listeners.add(new PacketListener(this));
         this.listeners.add(new ChatListener(this));
         this.listeners.add(new ChatToGuiListener(mainFrame));
-        this.listeners.add(new CloseConnectionListener(this, manager, logger));
+//        this.listeners.add(new CloseConnectionListener(this, manager, logger));
     }
 
     private void registerHandlers() {

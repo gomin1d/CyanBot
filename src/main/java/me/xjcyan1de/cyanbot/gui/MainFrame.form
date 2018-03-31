@@ -61,7 +61,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="localhost"/>
+              <text value="mc.JustVillage.ru"/>
             </properties>
           </component>
           <component id="acfb9" class="javax.swing.JTextField" binding="port">
@@ -122,7 +122,7 @@
         <properties/>
         <border type="none" title="Логи"/>
         <children>
-          <scrollpane id="c462c">
+          <scrollpane id="c462c" binding="chatScroll">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="-1" height="150"/>
@@ -139,7 +139,7 @@
               </component>
             </children>
           </scrollpane>
-          <scrollpane id="4a3c7">
+          <scrollpane id="4a3c7" binding="logsScroll">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="-1" height="150"/>
