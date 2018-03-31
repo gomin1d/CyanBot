@@ -46,7 +46,7 @@ public class Player {
         //....
 
         this.handlers.add(new CollisionHandler(this));
-        this.handlers.add(new DebugHandler(this, true));
+        this.handlers.add(new DebugHandler(this, false));
     }
 
     public void startBot(String host, int port) {
