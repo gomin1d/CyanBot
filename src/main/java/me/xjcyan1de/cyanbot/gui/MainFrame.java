@@ -15,7 +15,7 @@ import java.awt.event.WindowListener;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class MainFrame extends JDialog {
+public class MainFrame extends JFrame {
     private JPanel contentPane;
     private JTextArea joinCommands;
     private JTextField ip;
@@ -36,8 +36,9 @@ public class MainFrame extends JDialog {
         this.setTitle("CyanBot");
 
         setContentPane(contentPane);
-        setModal(true);
+//        setModal(true);
         getRootPane().setDefaultButton(join);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         logger.addHandler(new FormLoggerHandler(logs));
 
@@ -57,6 +58,10 @@ public class MainFrame extends JDialog {
                 player.sendMessage(messageText.getText());
             }
         });
+    }
+
+    public void onClose() {
+
     }
 
     {

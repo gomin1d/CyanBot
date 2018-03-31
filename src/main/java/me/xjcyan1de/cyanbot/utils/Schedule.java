@@ -29,4 +29,8 @@ public class Schedule {
         timer.scheduleAtFixedRate(timerTask, delay, period);
         return timerTask;
     }
+
+    public static Timer getTimer() {
+        return timer;
+    }
 }

@@ -2,7 +2,12 @@ package me.xjcyan1de.cyanbot;
 
 import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.logger.LoggerInstaller;
+import me.xjcyan1de.cyanbot.utils.Schedule;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -12,9 +17,8 @@ public class Main {
 
         PlayerManager manager = new PlayerManager(logger);
 
-        MainFrame dialog = new MainFrame(manager, logger);
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+        MainFrame mainFrame = new MainFrame(manager, logger);
+        mainFrame.pack();
+        mainFrame.setVisible(true);
     }
 }
