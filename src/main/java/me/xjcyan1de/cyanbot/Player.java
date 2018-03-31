@@ -46,10 +46,11 @@ public class Player {
     private TimerTask timerTask;
     private boolean debug = false;
 
-    public Player(PlayerManager manager, MainFrame mainFrame, Logger logger, String username) {
+    public Player(PlayerManager manager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
         this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
+        this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
 
         this.registerHandlers();
         this.registerListeners(mainFrame, manager);
@@ -74,9 +75,9 @@ public class Player {
         this.handlers.add(new DebugHandler(this));
     }
 
-    public void startBot(String host, int port) {
+    public void startBot() {
         try {
-            connectServer(host, port);
+            connectServer();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -90,9 +91,8 @@ public class Player {
        // this.getWorld().clearChunks(); // зачем?
     }
 
-    public void connectServer(String host, int port) {
-        logger.info("Пробуем подключится к " + host + ":" + port + "...");
-        this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
+    public void connectServer() {
+        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
         this.client.getSession().connect();
 
         this.world = new World();
@@ -188,5 +188,9 @@ public class Player {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public boolean isClose() {
+        return !client.getSession().isConnected();
     }
 }

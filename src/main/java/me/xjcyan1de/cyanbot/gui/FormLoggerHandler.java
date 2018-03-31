@@ -19,6 +19,7 @@ public class FormLoggerHandler extends Handler {
     @Override
     public void publish(LogRecord record) {
         logs.append(this.getFormatter().format(record));
+        logs.setCaretPosition(logs.getDocument().getLength());
     }
 
     @Override

@@ -18,6 +18,7 @@ public class ChatToGuiListener extends PacketAdapter {
     public void onReceived(PacketReceivedEvent event) {
         final ServerChatPacket packet = event.getPacket();
 
-        mainFrame.getChat().append("\n" + packet.getMessage().getFullText());
+        mainFrame.getChat().append(packet.getMessage().getFullText() + "\n");
+        mainFrame.getChat().setCaretPosition(mainFrame.getChat().getDocument().getLength());
     }
 }
