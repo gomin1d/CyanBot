@@ -10,6 +10,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.tasks.MoveTask;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.LinkedList;
@@ -96,11 +97,14 @@ public class ChatListener extends SessionAdapter {
                 }
                 case "walk":
                 case "иди": {
-                    if (args.length != 3) return;
-                    double x = Double.parseDouble(args[1]);
-                    double z = Double.parseDouble(args[2]);
+                    if (args.length != 4) return;
+                    int x = Integer.parseInt(args[1]);
+                    int y = Integer.parseInt(args[2]);
+                    int z = Integer.parseInt(args[2]);
 
-                    player.getSpeed().add(x, 0, z);
+                    final MoveTask moveTask = new MoveTask(player);
+                    moveTask.goToLocation(x, y, z);
+
                     break;
                 }
                 case "spin":
