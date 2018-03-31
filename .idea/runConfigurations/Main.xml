@@ -6,7 +6,7 @@
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="me.xjcyan1de.cyanbot.*" />
+        <option name="PATTERN" value="me.xjcyan1de.cyanbot.utils.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

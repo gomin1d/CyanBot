@@ -1,11 +1,14 @@
-package me.xjcyan1de.cyanbot;
+package me.xjcyan1de.cyanbot.utils;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class Schedule {
 
+    private static Timer timer = new java.util.Timer();
+
     public static void later(Runnable runnable, long time) {
-        new java.util.Timer().schedule(
+        timer.schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
@@ -23,7 +26,7 @@ public class Schedule {
                 runnable.run();
             }
         };
-        new java.util.Timer().scheduleAtFixedRate(timerTask, delay, period);
+        timer.scheduleAtFixedRate(timerTask, delay, period);
         return timerTask;
     }
 }

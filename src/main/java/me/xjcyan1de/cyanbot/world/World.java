@@ -78,6 +78,10 @@ public class World {
         return getChunkAt(location.getBlockX() >> 4, location.getBlockZ() >> 4) != null;
     }
 
+    public boolean hasChunkAt(Location loc) {
+        return chunkMap.containsKey(toKey(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
+    }
+
     private static class ChunkCoord {
 
         private int x, z;

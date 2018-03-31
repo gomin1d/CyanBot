@@ -1,6 +1,5 @@
 package me.xjcyan1de.cyanbot.handlers;
 
-import me.xjcyan1de.cyanbot.Handler;
 import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.world.Vector;
 

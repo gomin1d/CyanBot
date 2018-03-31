@@ -1,4 +1,4 @@
-package me.xjcyan1de.cyanbot;
+package me.xjcyan1de.cyanbot.listeners;
 
 import com.github.steveice10.mc.protocol.data.game.ClientRequest;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -16,6 +16,8 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
+import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.Block;
 import me.xjcyan1de.cyanbot.world.Chunk;
 import me.xjcyan1de.cyanbot.world.Location;
@@ -34,7 +36,7 @@ public class PacketListener extends SessionAdapter {
             Packet packetHandle = event.getPacket();
             if (packetHandle instanceof ServerJoinGamePacket) {
                 ServerJoinGamePacket packet = (ServerJoinGamePacket) packetHandle;
-                player.entityId = packet.getEntityId();
+                player.setEntityId(packet.getEntityId());
                 player.onJoin(packet);
             } else if (packetHandle instanceof ServerPlayerPositionRotationPacket) {
                 ServerPlayerPositionRotationPacket packet = (ServerPlayerPositionRotationPacket) packetHandle;
@@ -50,17 +52,9 @@ public class PacketListener extends SessionAdapter {
                 ServerChunkDataPacket packet = (ServerChunkDataPacket) packetHandle;
                 Chunk chunk = new Chunk(player.getWorld(), packet.getColumn());
 
-                final Block prev = player.getSolidBlock();
                 player.getWorld().mergeChunks(chunk);
 
-                System.out.println("Solid: " + prev + " " + player.getSolidBlock() + " datainchunk=" + chunk.getBlockAt(0, 0, 0, 0));
-                player.chunksLoaded = true;
                 System.out.println("Загрузили чанк: " + chunk.getX() + " " + chunk.getZ());
-
-                if (player.chunksLoaded && player.running && player.task == null) {
-                    player.onReady();
-                }
-
             } else if (packetHandle instanceof ServerUnloadChunkPacket) {
                 ServerUnloadChunkPacket packet = (ServerUnloadChunkPacket) packetHandle;
                 Chunk chunk = player.getWorld().getChunkAt(packet.getX(), packet.getZ());

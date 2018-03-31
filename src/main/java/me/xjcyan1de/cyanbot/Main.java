@@ -1,5 +1,7 @@
 package me.xjcyan1de.cyanbot;
 
+import me.xjcyan1de.cyanbot.utils.Schedule;
+
 import java.net.Proxy;
 
 public class Main {
@@ -7,7 +9,7 @@ public class Main {
     private static final Proxy AUTH_PROXY = Proxy.NO_PROXY;
 
     public static void main(String[] args) {
-        Player player = new Player("CyanBot");
+        Player player = new Player("CyanBotByLokha");
         player.startBot("mc.justvillage.ru", 25565);
         Schedule.later(() -> {
             player.sendMessage("/login test123");
