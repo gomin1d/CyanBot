@@ -17,12 +17,14 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 public class Player {
 
     private int entityId;
 
     private String username;
+    private Logger logger;
     private MinecraftProtocol protocol;
 
     private Client client;
@@ -40,7 +42,8 @@ public class Player {
     private TimerTask timerTask;
     private boolean debug = false;
 
-    public Player(String username) {
+    public Player(Logger logger, String username) {
+        this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
 
@@ -83,7 +86,7 @@ public class Player {
     }
 
     public void connectServer(String host, int port) {
-        System.out.println("Пробуем подключится к " + host + ":" + port + "...");
+        logger.info("Пробуем подключится к " + host + ":" + port + "...");
         this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
         this.client.getSession().connect();
 
