@@ -1,0 +1,322 @@
+package me.xjcyan1de.cyanbot.world;
+
+public enum Material {
+    AIR,
+    STONE,
+    GRASS,
+    DIRT,
+    COBBLESTONE,
+    PLANKS,
+    SAPLING,
+    BEDROCK,
+    FLOWING_WATER,
+    WATER,
+    FLOWING_LAVA,
+    LAVA,
+    SAND,
+    GRAVEL,
+    GOLD_ORE,
+    IRON_ORE,
+    COAL_ORE,
+    LOG,
+    LEAVES,
+    SPONGE,
+    GLASS,
+    LAPIS_ORE,
+    LAPIS_BLOCK,
+    DISPENSER,
+    SANDSTONE,
+    NOTEBLOCK,
+    BED,
+    GOLDEN_RAIL,
+    DETECTOR_RAIL,
+    STICKY_PISTON,
+    WEB,
+    TALLGRASS,
+    DEADBUSH,
+    PISTON,
+    PISTON_HEAD,
+    WOOL,
+    YELLOW_FLOWER,
+    RED_FLOWER,
+    BROWN_MUSHROOM,
+    RED_MUSHROOM,
+    GOLD_BLOCK,
+    IRON_BLOCK,
+    DOUBLE_STONE_SLAB,
+    STONE_SLAB,
+    BRICK_BLOCK,
+    TNT,
+    BOOKSHELF,
+    MOSSY_COBBLESTONE,
+    OBSIDIAN,
+    TORCH,
+    FIRE,
+    MOB_SPAWNER,
+    OAK_STAIRS,
+    CHEST,
+    REDSTONE_WIRE,
+    DIAMOND_ORE,
+    DIAMOND_BLOCK,
+    CRAFTING_TABLE,
+    WHEAT,
+    FARMLAND,
+    FURNACE,
+    LIT_FURNACE,
+    STANDING_SIGN,
+    WOODEN_DOOR,
+    LADDER,
+    RAIL,
+    STONE_STAIRS,
+    WALL_SIGN,
+    LEVER,
+    STONE_PRESSURE_PLATE,
+    IRON_DOOR,
+    WOODEN_PRESSURE_PLATE,
+    REDSTONE_ORE,
+    LIT_REDSTONE_ORE,
+    UNLIT_REDSTONE_TORCH,
+    REDSTONE_TORCH,
+    STONE_BUTTON,
+    SNOW_LAYER,
+    ICE,
+    SNOW,
+    CACTUS,
+    CLAY,
+    REEDS,
+    JUKEBOX,
+    FENCE,
+    PUMPKIN,
+    NETHERRACK,
+    SOUL_SAND,
+    GLOWSTONE,
+    PORTAL,
+    LIT_PUMPKIN,
+    CAKE,
+    UNPOWERED_REPEATER,
+    POWERED_REPEATER,
+    STAINED_GLASS,
+    TRAPDOOR,
+    MONSTER_EGG,
+    STONEBRICK,
+    BROWN_MUSHROOM_BLOCK,
+    RED_MUSHROOM_BLOCK,
+    IRON_BARS,
+    GLASS_PANE,
+    MELON_BLOCK,
+    PUMPKIN_STEM,
+    MELON_STEM,
+    VINE,
+    FENCE_GATE,
+    BRICK_STAIRS,
+    STONE_BRICK_STAIRS,
+    MYCELIUM,
+    WATERLILY,
+    NETHER_BRICK,
+    NETHER_BRICK_FENCE,
+    NETHER_BRICK_STAIRS,
+    NETHER_WART,
+    ENCHANTING_TABLE,
+    BREWING_STAND,
+    CAULDRON,
+    END_PORTAL,
+    END_PORTAL_FRAME,
+    END_STONE,
+    DRAGON_EGG,
+    REDSTONE_LAMP,
+    LIT_REDSTONE_LAMP,
+    DOUBLE_WOODEN_SLAB,
+    WOODEN_SLAB,
+    COCOA,
+    SANDSTONE_STAIRS,
+    EMERALD_ORE,
+    ENDER_CHEST,
+    TRIPWIRE_HOOK,
+    TRIPWIRE,
+    EMERALD_BLOCK,
+    SPRUCE_STAIRS,
+    BIRCH_STAIRS,
+    JUNGLE_STAIRS,
+    COMMAND_BLOCK,
+    BEACON,
+    COBBLESTONE_WALL,
+    FLOWER_POT,
+    CARROTS,
+    POTATOES,
+    WOODEN_BUTTON,
+    SKULL,
+    ANVIL,
+    TRAPPED_CHEST,
+    LIGHT_WEIGHTED_PRESSURE_PLATE,
+    HEAVY_WEIGHTED_PRESSURE_PLATE,
+    UNPOWERED_COMPARATOR,
+    POWERED_COMPARATOR,
+    DAYLIGHT_DETECTOR,
+    REDSTONE_BLOCK,
+    QUARTZ_ORE,
+    HOPPER,
+    QUARTZ_BLOCK,
+    QUARTZ_STAIRS,
+    ACTIVATOR_RAIL,
+    DROPPER,
+    STAINED_HARDENED_CLAY,
+    STAINED_GLASS_PANE,
+    LEAVES2,
+    LOG2,
+    ACACIA_STAIRS,
+    DARK_OAK_STAIRS,
+    SLIME,
+    BARRIER,
+    IRON_TRAPDOOR,
+    PRISMARINE,
+    SEA_LANTERN,
+    HAY_BLOCK,
+    CARPET,
+    HARDENED_CLAY,
+    COAL_BLOCK,
+    PACKED_ICE,
+    DOUBLE_PLANT,
+    STANDING_BANNER,
+    WALL_BANNER,
+    DAYLIGHT_DETECTOR_INVERTED,
+    RED_SANDSTONE,
+    RED_SANDSTONE_STAIRS,
+    DOUBLE_STONE_SLAB2,
+    STONE_SLAB2,
+    SPRUCE_FENCE_GATE,
+    BIRCH_FENCE_GATE,
+    JUNGLE_FENCE_GATE,
+    DARK_OAK_FENCE_GATE,
+    ACACIA_FENCE_GATE,
+    SPRUCE_FENCE,
+    BIRCH_FENCE,
+    JUNGLE_FENCE,
+    DARK_OAK_FENCE,
+    ACACIA_FENCE,
+    SPRUCE_DOOR,
+    BIRCH_DOOR,
+    JUNGLE_DOOR,
+    ACACIA_DOOR,
+    DARK_OAK_DOOR,
+    END_ROD,
+    CHORUS_PLANT,
+    CHORUS_FLOWER,
+    PURPUR_BLOCK,
+    PURPUR_PILLAR,
+    PURPUR_STAIRS,
+    PURPUR_DOUBLE_SLAB,
+    PURPUR_SLAB,
+    END_BRICKS,
+    BEETROOTS,
+    GRASS_PATH,
+    END_GATEWAY,
+    REPEATING_COMMAND_BLOCK,
+    CHAIN_COMMAND_BLOCK,
+    FROSTED_ICE,
+    MAGMA,
+    NETHER_WART_BLOCK,
+    RED_NETHER_BRICK,
+    BONE_BLOCK,
+    STRUCTURE_VOID,
+    OBSERVER,
+    WHITE_SHULKER_BOX,
+    ORANGE_SHULKER_BOX,
+    MAGENTA_SHULKER_BOX,
+    LIGHT_BLUE_SHULKER_BOX,
+    YELLOW_SHULKER_BOX,
+    LIME_SHULKER_BOX,
+    PINK_SHULKER_BOX,
+    GRAY_SHULKER_BOX,
+    SILVER_SHULKER_BOX,
+    CYAN_SHULKER_BOX,
+    PURPLE_SHULKER_BOX,
+    BLUE_SHULKER_BOX,
+    BROWN_SHULKER_BOX,
+    GREEN_SHULKER_BOX,
+    RED_SHULKER_BOX,
+    BLACK_SHULKER_BOX,
+    WHITE_GLAZED_TERRACOTTA,
+    ORANGE_GLAZED_TERRACOTTA,
+    MAGENTA_GLAZED_TERRACOTTA,
+    LIGHT_BLUE_GLAZED_TERRACOTTA,
+    YELLOW_GLAZED_TERRACOTTA,
+    LIME_GLAZED_TERRACOTTA,
+    PINK_GLAZED_TERRACOTTA,
+    GRAY_GLAZED_TERRACOTTA,
+    LIGHT_GRAY_GLAZED_TERRACOTTA,
+    CYAN_GLAZED_TERRACOTTA,
+    PURPLE_GLAZED_TERRACOTTA,
+    BLUE_GLAZED_TERRACOTTA,
+    BROWN_GLAZED_TERRACOTTA,
+    GREEN_GLAZED_TERRACOTTA,
+    RED_GLAZED_TERRACOTTA,
+    BLACK_GLAZED_TERRACOTTA,
+    CONCRETE,
+    CONCRETE_POWDER,
+    BLOCK_253,
+    BLOCK_254,
+    STRUCTURE_BLOCK;
+
+    public static Material[] values = values();
+
+    public String getMinecraftId() {
+        return "minecraft:" + name().toLowerCase();
+    }
+
+    public boolean isTransparent() {
+        switch (this) {
+            case AIR:
+            case SAPLING:
+            case GOLDEN_RAIL:
+            case DETECTOR_RAIL:
+            case TALLGRASS:
+            case DEADBUSH:
+            case YELLOW_FLOWER:
+            case RED_FLOWER:
+            case BROWN_MUSHROOM:
+            case RED_MUSHROOM:
+            case TORCH:
+            case FIRE:
+            case REDSTONE_WIRE:
+            case WHEAT:
+            case LADDER:
+            case RAIL:
+            case LEVER:
+            case REDSTONE_TORCH:
+            case STONE_BUTTON:
+            case SNOW:
+            case REEDS:
+            case PORTAL:
+            case POWERED_REPEATER:
+            case UNPOWERED_REPEATER:
+            case PUMPKIN_STEM:
+            case MELON_STEM:
+            case VINE:
+            case WATERLILY:
+            case NETHER_WART:
+            case END_PORTAL:
+            case COCOA:
+            case TRIPWIRE_HOOK:
+            case TRIPWIRE:
+            case FLOWER_POT:
+            case CARROTS:
+            case POTATOES:
+            case WOODEN_BUTTON:
+            case SKULL:
+            case POWERED_COMPARATOR:
+            case UNPOWERED_COMPARATOR:
+            case ACTIVATOR_RAIL:
+            case CARPET:
+            case DOUBLE_PLANT:
+            case END_ROD:
+            case CHORUS_PLANT:
+            case CHORUS_FLOWER:
+            case BEETROOTS:
+            case END_GATEWAY:
+            case STRUCTURE_VOID:
+                return true;
+            default:
+                return false;
+        }
+    }
+}
