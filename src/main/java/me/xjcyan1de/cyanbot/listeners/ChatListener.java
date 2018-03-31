@@ -27,7 +27,7 @@ public class ChatListener extends SessionAdapter {
         if (!(event.getPacket() instanceof ServerChatPacket)) return;
         ServerChatPacket packet = event.getPacket();
         final String message = packet.getMessage().getFullText();
-        System.out.println(player.getUsername() + " <- " + message);
+//        System.out.println(player.getUsername() + " <- " + message);
         onMessage(message);
     }
 

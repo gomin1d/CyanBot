@@ -151,7 +151,7 @@
               <component id="6bc62" class="javax.swing.JTextArea" binding="logs">
                 <constraints/>
                 <properties>
-                  <text value="логи"/>
+                  <text value="логи&#10;"/>
                 </properties>
               </component>
             </children>

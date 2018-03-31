@@ -8,8 +8,11 @@ import com.github.steveice10.packetlib.Client;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.handlers.*;
 import me.xjcyan1de.cyanbot.listeners.ChatListener;
+import me.xjcyan1de.cyanbot.listeners.ChatToGuiListener;
+import me.xjcyan1de.cyanbot.listeners.CloseConnectionListener;
 import me.xjcyan1de.cyanbot.listeners.PacketListener;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
@@ -43,18 +46,20 @@ public class Player {
     private TimerTask timerTask;
     private boolean debug = false;
 
-    public Player(Logger logger, String username) {
+    public Player(PlayerManager manager, MainFrame mainFrame, Logger logger, String username) {
         this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
 
         this.registerHandlers();
-        this.registerListeners();
+        this.registerListeners(mainFrame, manager);
     }
 
-    private void registerListeners() {
+    private void registerListeners(MainFrame mainFrame, PlayerManager manager) {
         this.listeners.add(new PacketListener(this));
         this.listeners.add(new ChatListener(this));
+        this.listeners.add(new ChatToGuiListener(mainFrame));
+        this.listeners.add(new CloseConnectionListener(this, manager, logger));
     }
 
     private void registerHandlers() {

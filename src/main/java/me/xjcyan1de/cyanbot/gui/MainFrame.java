@@ -43,7 +43,8 @@ public class MainFrame extends JFrame {
         logger.addHandler(new FormLoggerHandler(logs));
 
         join.addActionListener(e -> {
-            final Player player = new Player(new PlayerLogger(name.getText(), logger), name.getText());
+            final Player player = new Player(manager,this,
+                    new PlayerLogger(name.getText(), logger), name.getText());
             manager.connectPlayer(player, ip.getText(), Integer.parseInt(port.getText()));
             Schedule.later(() -> {
                 for (String cmd : joinCommands.getText().split("\n")) {
@@ -60,8 +61,8 @@ public class MainFrame extends JFrame {
         });
     }
 
-    public void onClose() {
-
+    public JTextArea getChat() {
+        return chat;
     }
 
     {

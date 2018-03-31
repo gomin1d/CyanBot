@@ -22,4 +22,8 @@ public class PlayerManager {
     public Player getPlayer(String nameText) {
         return playerMap.get(nameText);
     }
+
+    public void disconnectPlayer(Player player) {
+        playerMap.remove(player.getUsername());
+    }
 }
