@@ -23,8 +23,6 @@ public class Main {
     public static void main(String[] args) throws Exception {
         setUTF8();
 
-        Hover.hoverText("LOl", "Kek");
-
         final Logger logger = LoggerInstaller.create("CyanBot", "CyanBot.log");
 
         PlayerManager manager = new PlayerManager(logger);
