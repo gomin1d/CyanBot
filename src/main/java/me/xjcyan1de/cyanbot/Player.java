@@ -62,6 +62,7 @@ public class Player {
         this.handlers.add(new ValidateHandler(this));
         this.handlers.add(new UpdatePositionHandler(this));
         this.handlers.add(new DebugHandler(this));
+        this.handlers.add(new ChatHandler(this));
     }
 
     public void startBot(String host, int port) {
@@ -70,7 +71,7 @@ public class Player {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        handlers.forEach(Handler::onStartBot);
         this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
     }
 

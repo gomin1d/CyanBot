@@ -9,7 +9,7 @@ public class Main {
     private static final Proxy AUTH_PROXY = Proxy.NO_PROXY;
 
     public static void main(String[] args) {
-        Player player = new Player("CyanBotByLokha");
+        Player player = new Player("CyanBot");
         player.startBot("mc.justvillage.ru", 25565);
         Schedule.later(() -> {
             player.sendMessage("/login test123");
