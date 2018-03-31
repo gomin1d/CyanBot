@@ -3,10 +3,15 @@ package me.xjcyan1de.cyanbot;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class PlayerManager {
+    private ExecutorService service = Executors.newFixedThreadPool(2);
+
     private Map<String, Player> playerMap = new HashMap<>();
     private Logger logger;
 
@@ -26,7 +31,7 @@ public class PlayerManager {
     public void connectPlayer(Player player) {
         if (!playerMap.containsKey(player.getUsername())) {
             playerMap.put(player.getUsername(), player);
-            player.startBot();
+            service.submit(player::startBot);
         }
     }
 
@@ -36,7 +41,7 @@ public class PlayerManager {
 
     public void disconnectPlayer(Player player) {
         playerMap.remove(player.getUsername());
-        player.getClient().getSession().disconnect("Final");
+        service.submit(()-> player.getClient().getSession().disconnect("Final"));
     }
 
     public Collection<Player> getPlayers() {

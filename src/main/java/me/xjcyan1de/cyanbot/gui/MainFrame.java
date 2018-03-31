@@ -4,11 +4,17 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.PlayerManager;
+import me.xjcyan1de.cyanbot.config.Config;
 import me.xjcyan1de.cyanbot.logger.PlayerLogger;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -16,7 +22,6 @@ public class MainFrame extends JFrame {
     private JPanel contentPane;
     private JTextArea joinCommands;
     private JTextField ip;
-    private JTextField port;
     private JButton join;
     private JTextField name;
     private JTextArea chat;
@@ -27,11 +32,14 @@ public class MainFrame extends JFrame {
     private JScrollPane logsScroll;
     private JButton leave;
     private JTextField status;
+    private JComboBox historyIp;
     private JRadioButton hasJoin;
+    private Config config;
     private PlayerManager manager;
     private Logger logger;
 
-    public MainFrame(PlayerManager manager, Logger logger) {
+    public MainFrame(Config config, PlayerManager manager, Logger logger) {
+        this.config = config;
         this.manager = manager;
         this.logger = logger;
 
@@ -39,6 +47,9 @@ public class MainFrame extends JFrame {
         setContentPane(contentPane);
         getRootPane().setDefaultButton(join);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        final ConfigSavedJFrameData configSaved = new ConfigSavedJFrameData(this, config);
+        configSaved.register();
 
         logger.addHandler(new FormLoggerHandler(logs));
 
@@ -74,10 +85,18 @@ public class MainFrame extends JFrame {
         return name;
     }
 
+
+    public JButton getJoin() {
+        return join;
+    }
+
+    @SuppressWarnings("unchecked")
     private void registerListeners() {
         join.addActionListener(e -> {
+            String ipText = ip.getText();
+            final String[] ipPort = ipText.split(":");
             final Player player = new Player(manager, this,
-                    new PlayerLogger(name.getText(), logger), name.getText(), ip.getText(), Integer.parseInt(port.getText()));
+                    new PlayerLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
             manager.connectPlayer(player);
             Schedule.later(() -> {
                 for (String cmd : joinCommands.getText().split("\n")) {
@@ -99,6 +118,25 @@ public class MainFrame extends JFrame {
                 player.sendMessage(messageText.getText());
             }
         });
+    }
+
+    public JTextField getIp() {
+        return ip;
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
+    }
+
+    public JComboBox getHistoryIp() {
+        return historyIp;
+    }
+
+    public JTextArea getJoinCommands() {
+        return joinCommands;
     }
 
     public JTextArea getChat() {
@@ -144,15 +182,18 @@ public class MainFrame extends JFrame {
         status.setText("Статус");
         panel1.add(status, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.setBorder(BorderFactory.createTitledBorder("IP"));
         ip = new JTextField();
-        ip.setText("mc.JustVillage.ru");
+        ip.setText("mc.JustVillage.ru:25565");
         panel2.add(ip, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        port = new JTextField();
-        port.setText("25565");
-        panel2.add(port, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        historyIp = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("localhost");
+        defaultComboBoxModel1.addElement("mc.mineland.net:25565");
+        historyIp.setModel(defaultComboBoxModel1);
+        panel2.add(historyIp, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -182,12 +223,5 @@ public class MainFrame extends JFrame {
         logs = new JTextArea();
         logs.setText("логи\n");
         logsScroll.setViewportView(logs);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return contentPane;
     }
 }

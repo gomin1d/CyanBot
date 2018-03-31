@@ -38,7 +38,7 @@ public class Hover extends JDialog {
      * @param text  текст
      */
     public static void hoverText(String title, String text) {
-        new Thread(()->{
+        new Thread(() -> {
             final Hover hover = new Hover(text);
             hover.setTitle(title);
             hover.pack();
