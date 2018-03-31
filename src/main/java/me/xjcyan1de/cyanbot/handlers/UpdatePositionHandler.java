@@ -31,4 +31,9 @@ public class UpdatePositionHandler implements Handler {
 
         prev.set(loc);
     }
+
+    @Override
+    public void onStartBot() {
+
+    }
 }

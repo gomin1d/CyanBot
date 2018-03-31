@@ -33,6 +33,11 @@ public class GroundHandler implements Handler {
         }
     }
 
+    @Override
+    public void onStartBot() {
+
+    }
+
     private boolean canDownMove(Block solid) {
         return loc.getY() + speed.getY() > solid.getY() + 1;
     }

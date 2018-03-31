@@ -27,4 +27,9 @@ public class ValidateHandler implements Handler {
             }
         }
     }
+
+    @Override
+    public void onStartBot() {
+
+    }
 }

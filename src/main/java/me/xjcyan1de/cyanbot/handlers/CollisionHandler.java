@@ -27,4 +27,9 @@ public class CollisionHandler implements Handler {
             }
         }
     }
+
+    @Override
+    public void onStartBot() {
+
+    }
 }

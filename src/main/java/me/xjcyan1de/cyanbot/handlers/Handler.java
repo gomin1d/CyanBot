@@ -14,4 +14,6 @@ public interface Handler {
     default boolean canRun() {
         return true;
     }
+
+    void onStartBot();
 }

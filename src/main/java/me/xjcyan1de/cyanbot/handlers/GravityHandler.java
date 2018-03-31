@@ -28,4 +28,9 @@ public class GravityHandler implements Handler {
             }
         }
     }
+
+    @Override
+    public void onStartBot() {
+
+    }
 }
