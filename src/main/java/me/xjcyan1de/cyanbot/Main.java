@@ -2,7 +2,7 @@ package me.xjcyan1de.cyanbot;
 
 import java.net.Proxy;
 
-public class BotManager {
+public class Main {
     private static final Proxy PROXY = Proxy.NO_PROXY;
     private static final Proxy AUTH_PROXY = Proxy.NO_PROXY;
 
