@@ -73,6 +73,11 @@ public class Block {
         return boundBox;
     }
 
+    public Block getRelative(int offX, int offY, int offZ) {
+        final Location location = new Location(getX() + offX, getY() + offY, getZ() + offZ);
+        return world.getBlockAt(location);
+    }
+
     @Override
     public String toString() {
         return "Block{" +

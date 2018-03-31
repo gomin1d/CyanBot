@@ -15,7 +15,7 @@ public class PlayerManager {
     public void connectPlayer(Player player, String host, int ip) {
         if (!playerMap.containsKey(player.getUsername())) {
             playerMap.put(player.getUsername(), player);
-            player.connectServer(host, ip);
+            player.startBot(host, ip);
         }
     }
 
