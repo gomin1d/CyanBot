@@ -1,11 +1,14 @@
 package me.xjcyan1de.cyanbot;
 
+import me.xjcyan1de.cyanbot.gui.Hover;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.logger.LoggerInstaller;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -20,6 +23,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         setUTF8();
 
+        Hover.hoverText("LOl", "Kek");
 
         final Logger logger = LoggerInstaller.create("CyanBot", "CyanBot.log");
 
@@ -27,6 +31,7 @@ public class Main {
 
         MainFrame mainFrame = new MainFrame(manager, logger);
         mainFrame.pack();
+        mainFrame.setLocationRelativeTo(null); // по центу экрана
         mainFrame.setVisible(true);
     }
 

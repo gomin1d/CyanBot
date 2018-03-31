@@ -47,7 +47,7 @@ public class MainFrame extends JFrame {
     }
 
     private void scheduleUpdateStatus(MainFrame mainFrame, PlayerManager manager) {
-        Schedule.timer(()->{
+        Schedule.timer(() -> {
             final Map<String, Player> playerMap = manager.getPlayerMap();
             boolean connected = playerMap.containsKey(name.getText()) && !playerMap.get(name.getText()).isClose();
 
