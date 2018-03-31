@@ -2,35 +2,46 @@ package me.xjcyan1de.cyanbot.utils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class Schedule {
 
     private static Timer timer = new java.util.Timer();
 
-    public static void later(Runnable runnable, long time) {
+    public static TimerTask later(Runnable runnable, long delay) {
+        return later(runnable, delay, TimeUnit.MILLISECONDS);
+    }
+
+    public static TimerTask later(Runnable runnable, long delay, TimeUnit timeUnit) {
+        final TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
         timer.schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        runnable.run();
-                    }
-                },
-                time
+                timerTask,
+                timeUnit.toMillis(delay)
         );
+        return timerTask;
     }
 
     public static TimerTask timer(Runnable runnable, long delay, long period) {
+        return timer(runnable, delay, period, TimeUnit.MILLISECONDS);
+    }
+
+    public static Timer getTimer() {
+        return timer;
+    }
+
+    public static TimerTask timer(Runnable runnable, long delay, long period, TimeUnit timeUnit) {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 runnable.run();
             }
         };
-        timer.scheduleAtFixedRate(timerTask, delay, period);
+        timer.scheduleAtFixedRate(timerTask, timeUnit.toMillis(delay), timeUnit.toMillis(period));
         return timerTask;
-    }
-
-    public static Timer getTimer() {
-        return timer;
     }
 }

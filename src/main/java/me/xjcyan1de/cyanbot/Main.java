@@ -11,6 +11,9 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Main {
@@ -31,6 +34,6 @@ public class Main {
         System.setProperty("file.encoding","UTF-8");
         Field charset = Charset.class.getDeclaredField("defaultCharset");
         charset.setAccessible(true);
-        charset.set(null,null);
+        charset.set(null, null);
     }
 }

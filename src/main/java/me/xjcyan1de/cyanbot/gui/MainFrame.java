@@ -8,8 +8,8 @@ import me.xjcyan1de.cyanbot.logger.PlayerLogger;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class MainFrame extends JFrame {
@@ -25,6 +25,9 @@ public class MainFrame extends JFrame {
     private JButton sendMessage;
     private JScrollPane chatScroll;
     private JScrollPane logsScroll;
+    private JButton leave;
+    private JTextField status;
+    private JRadioButton hasJoin;
     private PlayerManager manager;
     private Logger logger;
 
@@ -33,23 +36,61 @@ public class MainFrame extends JFrame {
         this.logger = logger;
 
         this.setTitle("CyanBot");
-
         setContentPane(contentPane);
-//        setModal(true);
         getRootPane().setDefaultButton(join);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         logger.addHandler(new FormLoggerHandler(logs));
 
+        this.registerListeners();
+        this.scheduleUpdateStatus(this, manager);
+    }
+
+    private void scheduleUpdateStatus(MainFrame mainFrame, PlayerManager manager) {
+        Schedule.timer(()->{
+            final Map<String, Player> playerMap = manager.getPlayerMap();
+            boolean connected = playerMap.containsKey(name.getText()) && !playerMap.get(name.getText()).isClose();
+
+            final JTextField status = mainFrame.getStatus();
+            if (!connected) {
+                status.setText("Не подключен");
+                status.setBackground(Color.decode("#ff5050"));
+            } else {
+                status.setText("Подключен");
+                status.setBackground(Color.decode("#33cc33"));
+            }
+
+            sendMessage.setEnabled(connected);
+            leave.setEnabled(connected);
+            join.setEnabled(!connected);
+        }, 0, 500);
+    }
+
+    public JTextField getStatus() {
+        return status;
+    }
+
+    public JTextField getUsername() {
+        return name;
+    }
+
+    private void registerListeners() {
         join.addActionListener(e -> {
             final Player player = new Player(manager, this,
-                    new PlayerLogger(name.getText(), logger), name.getText());
-            manager.connectPlayer(player, ip.getText(), Integer.parseInt(port.getText()));
+                    new PlayerLogger(name.getText(), logger), name.getText(), ip.getText(), Integer.parseInt(port.getText()));
+            manager.connectPlayer(player);
             Schedule.later(() -> {
                 for (String cmd : joinCommands.getText().split("\n")) {
                     player.sendMessage(cmd);
                 }
             }, 1000);
+        });
+
+        leave.addActionListener(e -> {
+            final Player player = manager.getPlayer(name.getText());
+            if (player != null) {
+                manager.disconnectPlayer(player);
+            }
         });
 
         sendMessage.addActionListener(e -> {
@@ -82,7 +123,7 @@ public class MainFrame extends JFrame {
         contentPane = new JPanel();
         contentPane.setLayout(new GridLayoutManager(4, 1, new Insets(10, 10, 10, 10), -1, -1));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.setBorder(BorderFactory.createTitledBorder("Данные"));
         name = new JTextField();
@@ -92,8 +133,16 @@ public class MainFrame extends JFrame {
         joinCommands.setText("/reg test123 test123\n/login test123");
         panel1.add(joinCommands, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         join = new JButton();
-        join.setText("Войти");
+        join.setText("Подключиться");
         panel1.add(join, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        leave = new JButton();
+        leave.setEnabled(false);
+        leave.setText("Отключиться");
+        panel1.add(leave, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        status = new JTextField();
+        status.setEditable(false);
+        status.setText("Статус");
+        panel1.add(status, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -113,6 +162,7 @@ public class MainFrame extends JFrame {
         panel3.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel4.setBorder(BorderFactory.createTitledBorder("Чат"));
         sendMessage = new JButton();
+        sendMessage.setEnabled(false);
         sendMessage.setText("Сообщение");
         panel4.add(sendMessage, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         messageText = new JTextField();
