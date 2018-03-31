@@ -5,6 +5,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.packetlib.Client;
+import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
@@ -20,6 +21,7 @@ import me.xjcyan1de.cyanbot.world.*;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
@@ -45,6 +47,8 @@ public class Player {
 
     private TimerTask timerTask;
     private boolean debug = false;
+
+    String accessKey;
 
     public Player(PlayerManager manager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
         this.logger = logger;
@@ -91,17 +95,7 @@ public class Player {
        // this.getWorld().clearChunks(); // зачем?
     }
 
-    public void connectServer() {
-        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
-        this.client.getSession().connect();
-
-        this.world = new World();
-        this.boundBox = new BoundBox(0.6, 1.8);
-
-        listeners.forEach(sessionAdapter -> {
-            this.getClient().getSession().addListener(sessionAdapter);
-        });
-    }
+    private boolean beforeConnect = true;
 
     public void sendPacket(Packet packet) {
         if (!(packet instanceof ClientPlayerPositionRotationPacket || packet instanceof ClientChatPacket)) {
@@ -190,7 +184,38 @@ public class Player {
         this.debug = debug;
     }
 
+    public void connectServer() {
+        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
+        this.client.getSession().connect();
+
+        this.world = new World();
+        this.boundBox = new BoundBox(0.6, 1.8);
+
+        listeners.forEach(sessionAdapter -> {
+            this.getClient().getSession().addListener(sessionAdapter);
+        });
+
+        this.getClient().getSession().addListener(new SessionAdapter() {
+            @Override
+            public void connected(ConnectedEvent event) {
+                beforeConnect = false;
+            }
+        });
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
     public boolean isClose() {
-        return !client.getSession().isConnected();
+        return !beforeConnect && !client.getSession().isConnected();
+    }
+
+    public String generateAccessKey() {
+        Random random = new Random();
+        this.accessKey = String.valueOf(1000 + random.nextInt(8999));
+        System.out.println("Сгенерирован новый ключ: " + accessKey);
+        this.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
+        return accessKey;
     }
 }

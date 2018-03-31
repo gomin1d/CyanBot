@@ -15,17 +15,14 @@ import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 
 public class ChatListener extends SessionAdapter {
     Player player;
     List<String> accessPatterns = new LinkedList<>();
-    String accessKey;
 
     public ChatListener(Player player) {
         this.player = player;
-        Schedule.later(this::generateAccessKey, 3000);
     }
 
     @Override
@@ -56,15 +53,15 @@ public class ChatListener extends SessionAdapter {
         System.arraycopy(split, readFrom, args, 0, args.length);
 
         if (!hasAccess(senderPattern)) {
-            if ((args.length == 2 && args[0].equals("ключ") && args[1].equals(accessKey)) ||
-                    args.length == 1 && args[0].equals(accessKey)) {
+            if ((args.length == 2 && args[0].equals("ключ") && args[1].equals(player.getAccessKey())) ||
+                    args.length == 1 && args[0].equals(player.getAccessKey())) {
                 int totalLenght = 0;
                 for (String arg : args) totalLenght += arg.length();
                 final String pattern = senderPattern.substring(0, senderPattern.length() - totalLenght - 1);
                 accessPatterns.add(pattern);
                 System.out.println("Добавлен патерн: " + pattern);
                 player.sendMessage("Успешная авторизация!");
-                generateAccessKey();
+                player.generateAccessKey();
             }
         } else {
             switch (args[0].toLowerCase()) {
@@ -170,13 +167,5 @@ public class ChatListener extends SessionAdapter {
 
     public boolean hasAccess(String pattern) {
         return accessPatterns.stream().anyMatch(pattern::startsWith);
-    }
-
-    public String generateAccessKey() {
-        Random random = new Random();
-        this.accessKey = String.valueOf(1000 + random.nextInt(8999));
-        System.out.println("Сгенерирован новый ключ: " + accessKey);
-        player.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
-        return accessKey;
     }
 }
