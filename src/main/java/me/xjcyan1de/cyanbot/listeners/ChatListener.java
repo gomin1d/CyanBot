@@ -67,6 +67,7 @@ public class ChatListener extends SessionAdapter {
             }
         } else {
             switch (args[0].toLowerCase()) {
+                case "say":
                 case "напиши":
                 case "скажи": {
                     if (args.length > 1) {
@@ -79,6 +80,7 @@ public class ChatListener extends SessionAdapter {
                     }
                     break;
                 }
+                case "flood":
                 case "флуди": {
                     if (args.length > 1) {
                         StringBuilder sb = new StringBuilder();
@@ -92,6 +94,7 @@ public class ChatListener extends SessionAdapter {
                     }
                     break;
                 }
+                case "walk":
                 case "иди": {
                     if (args.length != 3) return;
                     double x = Double.parseDouble(args[1]);
@@ -100,6 +103,7 @@ public class ChatListener extends SessionAdapter {
                     player.getSpeed().add(x, 0, z);
                     break;
                 }
+                case "spin":
                 case "кружись": {
                     final int[] yaw = {0};
                     Schedule.timer(() -> {
@@ -108,6 +112,7 @@ public class ChatListener extends SessionAdapter {
                     }, 50, 50);
                     break;
                 }
+                case "drop":
                 case "выкинь": {
                     player.sendPacket(new ClientPlayerActionPacket(
                             PlayerAction.DROP_ITEM,
@@ -115,6 +120,7 @@ public class ChatListener extends SessionAdapter {
                             BlockFace.UP));
                     break;
                 }
+                case "swap":
                 case "переложи": {
                     player.sendPacket(new ClientPlayerActionPacket(
                             PlayerAction.SWAP_HANDS,
@@ -122,6 +128,7 @@ public class ChatListener extends SessionAdapter {
                             BlockFace.UP));
                     break;
                 }
+                case "swapping":
                 case "перехватывай": {
                     if (args.length != 2) return;
                     int delay = Integer.parseInt(args[1]);
@@ -133,6 +140,7 @@ public class ChatListener extends SessionAdapter {
                     }, delay, delay);
                     break;
                 }
+                case "rightclick":
                 case "пкм": {
                     player.sendPacket(new ClientPlayerUseItemPacket(Hand.MAIN_HAND));
                     break;
