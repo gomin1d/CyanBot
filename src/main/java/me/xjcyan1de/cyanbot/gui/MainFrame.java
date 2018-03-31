@@ -1,6 +1,5 @@
 package me.xjcyan1de.cyanbot.gui;
 
-import com.github.steveice10.packetlib.packet.Packet;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import me.xjcyan1de.cyanbot.Player;
@@ -10,9 +9,6 @@ import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 public class MainFrame extends JFrame {
@@ -87,7 +83,7 @@ public class MainFrame extends JFrame {
         contentPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.setBorder(BorderFactory.createTitledBorder("Данные"));
         name = new JTextField();
-        name.setText("CyanBotByLokha");
+        name.setText("CyanBot");
         panel1.add(name, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         joinCommands = new JTextArea();
         joinCommands.setText("/reg test123 test123\n/login test123");
@@ -100,7 +96,7 @@ public class MainFrame extends JFrame {
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.setBorder(BorderFactory.createTitledBorder("Айпи"));
         ip = new JTextField();
-        ip.setText("mc.justvillage.ru");
+        ip.setText("localhost");
         panel2.add(ip, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         port = new JTextField();
         port.setText("25565");

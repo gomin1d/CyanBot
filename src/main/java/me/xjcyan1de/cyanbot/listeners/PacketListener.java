@@ -54,12 +54,12 @@ public class PacketListener extends SessionAdapter {
 
                 player.getWorld().mergeChunks(chunk);
 
-                System.out.println("Загрузили чанк: " + chunk.getX() + " " + chunk.getZ());
+                //System.out.println("Загрузили чанк: " + chunk.getX() + " " + chunk.getZ());
             } else if (packetHandle instanceof ServerUnloadChunkPacket) {
                 ServerUnloadChunkPacket packet = (ServerUnloadChunkPacket) packetHandle;
                 Chunk chunk = player.getWorld().getChunkAt(packet.getX(), packet.getZ());
                 player.getWorld().removeChunk(chunk);
-                System.out.println("Удалили чанк: " + chunk.getX() + " " + chunk.getZ());
+                //System.out.println("Удалили чанк: " + chunk.getX() + " " + chunk.getZ());
             } else if (packetHandle instanceof ServerPlayerHealthPacket) {
                 ServerPlayerHealthPacket packet = (ServerPlayerHealthPacket) packetHandle;
                 if (packet.getHealth() == 0) {
@@ -75,7 +75,7 @@ public class PacketListener extends SessionAdapter {
                     Block block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
                     if (block != null) {
                         block.setIdAndData(blockState.getId(), blockState.getData());
-                        System.out.println("Новый блок = " + block);
+                        //System.out.println("Новый блок = " + block);
                     } else {
                         System.out.println("Чё за хуйня у нас блок == Null" + position.getX() + " " + position.getY() + " " + position.getZ());
                     }

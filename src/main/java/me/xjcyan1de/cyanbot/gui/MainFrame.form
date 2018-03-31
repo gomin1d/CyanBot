@@ -23,7 +23,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="CyanBotByLokha"/>
+              <text value="CyanBot"/>
             </properties>
           </component>
           <component id="7ea5f" class="javax.swing.JTextArea" binding="joinCommands">
@@ -61,7 +61,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="mc.justvillage.ru"/>
+              <text value="localhost"/>
             </properties>
           </component>
           <component id="acfb9" class="javax.swing.JTextField" binding="port">

@@ -1,10 +1,15 @@
 package me.xjcyan1de.cyanbot.listeners;
 
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
+import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockFace;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerUseItemPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import me.xjcyan1de.cyanbot.Player;
-import me.xjcyan1de.cyanbot.handlers.Handler;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.LinkedList;
@@ -74,6 +79,19 @@ public class ChatListener extends SessionAdapter {
                     }
                     break;
                 }
+                case "флуди": {
+                    if (args.length > 1) {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 1; i < args.length; i++) {
+                            sb.append(args[i]).append(" ");
+                        }
+                        sb.setLength(sb.length() - 1);
+                        Schedule.timer(() -> {
+                            player.sendMessage(sb.toString());
+                        }, 1000, 1000);
+                    }
+                    break;
+                }
                 case "иди": {
                     if (args.length != 3) return;
                     double x = Double.parseDouble(args[1]);
@@ -88,6 +106,35 @@ public class ChatListener extends SessionAdapter {
                         player.getLoc().setYaw(yaw[0]);
                         yaw[0] += 30;
                     }, 50, 50);
+                    break;
+                }
+                case "выкинь": {
+                    player.sendPacket(new ClientPlayerActionPacket(
+                            PlayerAction.DROP_ITEM,
+                            new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                            BlockFace.UP));
+                    break;
+                }
+                case "переложи": {
+                    player.sendPacket(new ClientPlayerActionPacket(
+                            PlayerAction.SWAP_HANDS,
+                            new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                            BlockFace.UP));
+                    break;
+                }
+                case "перехватывай": {
+                    if (args.length != 2) return;
+                    int delay = Integer.parseInt(args[1]);
+                    Schedule.timer(() -> {
+                        player.sendPacket(new ClientPlayerActionPacket(
+                                PlayerAction.SWAP_HANDS,
+                                new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                                BlockFace.UP));
+                    }, delay, delay);
+                    break;
+                }
+                case "пкм": {
+                    player.sendPacket(new ClientPlayerUseItemPacket(Hand.MAIN_HAND));
                     break;
                 }
                 case "deus": {
