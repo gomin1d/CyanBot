@@ -6,6 +6,7 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEffectPacket;
@@ -80,6 +81,10 @@ public class PacketListener extends SessionAdapter {
                         System.out.println("Чё за хуйня у нас блок == Null" + position.getX() + " " + position.getY() + " " + position.getZ());
                     }
                 }
+            } else if (packetHandle instanceof ServerChatPacket) {
+                ServerChatPacket packet = (ServerChatPacket) packetHandle;
+                final Message message = packet.getMessage();
+                System.out.println(player.getUsername() + " <- " + message.getFullText());
             } else {
                 if (packetHandle instanceof ServerUpdateTimePacket ||
                         packetHandle instanceof ServerKeepAlivePacket ||
