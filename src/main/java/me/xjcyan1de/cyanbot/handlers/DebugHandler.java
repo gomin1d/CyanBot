@@ -18,9 +18,4 @@ public class DebugHandler implements Handler {
                     player.getSolidBlock());
         }
     }
-
-    @Override
-    public void onStartBot() {
-
-    }
 }
