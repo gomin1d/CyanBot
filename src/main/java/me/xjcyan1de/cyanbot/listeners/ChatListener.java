@@ -1,9 +1,10 @@
-package me.xjcyan1de.cyanbot.handlers;
+package me.xjcyan1de.cyanbot.listeners;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.handlers.Handler;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.LinkedList;
@@ -11,23 +12,14 @@ import java.util.List;
 import java.util.Random;
 
 
-public class ChatHandler extends SessionAdapter implements Handler {
+public class ChatListener extends SessionAdapter {
     Player player;
     List<String> accessPatterns = new LinkedList<>();
     String accessKey;
 
-    public ChatHandler(Player player) {
+    public ChatListener(Player player) {
         this.player = player;
         Schedule.later(this::generateAccessKey, 3000);
-    }
-
-    @Override
-    public void onUpdate() {
-    }
-
-    @Override
-    public void onStartBot() {
-        player.getClient().getSession().addListener(this);
     }
 
     @Override

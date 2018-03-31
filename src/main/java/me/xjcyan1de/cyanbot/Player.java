@@ -9,6 +9,7 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import me.xjcyan1de.cyanbot.handlers.*;
+import me.xjcyan1de.cyanbot.listeners.ChatListener;
 import me.xjcyan1de.cyanbot.listeners.PacketListener;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
@@ -53,6 +54,7 @@ public class Player {
 
     private void registerListeners() {
         this.listeners.add(new PacketListener(this));
+        this.listeners.add(new ChatListener(this));
     }
 
     private void registerHandlers() {
@@ -65,7 +67,6 @@ public class Player {
         this.handlers.add(new ValidateHandler(this));
         this.handlers.add(new UpdatePositionHandler(this));
         this.handlers.add(new DebugHandler(this));
-        this.handlers.add(new ChatHandler(this));
     }
 
     public void startBot(String host, int port) {
@@ -74,7 +75,6 @@ public class Player {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        handlers.forEach(Handler::onStartBot);
         this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
     }
 
