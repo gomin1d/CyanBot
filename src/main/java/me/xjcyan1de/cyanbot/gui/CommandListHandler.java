@@ -1,9 +1,6 @@
 package me.xjcyan1de.cyanbot.gui;
 
-import me.xjcyan1de.cyanbot.gui.commands.Command;
-import me.xjcyan1de.cyanbot.gui.commands.CommandChat;
-import me.xjcyan1de.cyanbot.gui.commands.CommandSpin;
-import me.xjcyan1de.cyanbot.gui.commands.CommandWalk;
+import me.xjcyan1de.cyanbot.gui.commands.*;
 
 import javax.swing.*;
 
@@ -19,5 +16,6 @@ public class CommandListHandler {
         new CommandChat().register(listModel);
         new CommandWalk().register(listModel);
         new CommandSpin().register(listModel);
+        new CommandSelectSlot().register(listModel);
     }
 }

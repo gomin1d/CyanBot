@@ -3,7 +3,7 @@
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="59" width="422" height="664"/>
+      <xy x="48" y="59" width="568" height="664"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -195,7 +195,7 @@
                   <selectionMode value="0"/>
                 </properties>
               </component>
-              <grid id="c2079" binding="commandPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="c2079" binding="commandPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="1" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -203,38 +203,88 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="c7479" class="javax.swing.JButton" binding="enableSpin">
+                  <grid id="5c4ad" binding="slotPanel" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties>
-                      <alignmentX value="1.0"/>
-                      <defaultCapable value="true"/>
-                      <doubleBuffered value="false"/>
-                      <horizontalTextPosition value="0"/>
-                      <margin top="10" left="13" bottom="2" right="14"/>
-                      <text value="Включить/выключить"/>
-                    </properties>
-                  </component>
-                  <component id="b5579" class="javax.swing.JSlider" binding="sliderSpin">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <maximum value="50"/>
-                      <value value="0"/>
-                    </properties>
-                  </component>
-                  <component id="1c2f0" class="javax.swing.JTextField" binding="valueSpin">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="-1"/>
-                      </grid>
-                    </constraints>
-                    <properties>
-                      <text value="0"/>
-                    </properties>
-                  </component>
+                    <properties/>
+                    <border type="none" title="Слот"/>
+                    <children>
+                      <component id="48bee" class="javax.swing.JButton" binding="slotButton1">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 1"/>
+                        </properties>
+                      </component>
+                      <component id="67411" class="javax.swing.JButton" binding="slotButton2">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 2"/>
+                        </properties>
+                      </component>
+                      <component id="44317" class="javax.swing.JButton" binding="slotButton3">
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 3"/>
+                        </properties>
+                      </component>
+                      <component id="a5bef" class="javax.swing.JButton" binding="slotButton4">
+                        <constraints>
+                          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 4"/>
+                        </properties>
+                      </component>
+                      <component id="30969" class="javax.swing.JButton" binding="slotButton5">
+                        <constraints>
+                          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 5"/>
+                        </properties>
+                      </component>
+                      <component id="3174e" class="javax.swing.JButton" binding="slotButton6">
+                        <constraints>
+                          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 6"/>
+                        </properties>
+                      </component>
+                      <component id="3d013" class="javax.swing.JButton" binding="slotButton7">
+                        <constraints>
+                          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 7"/>
+                        </properties>
+                      </component>
+                      <component id="e6ae2" class="javax.swing.JButton" binding="slotButton8">
+                        <constraints>
+                          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 8"/>
+                        </properties>
+                      </component>
+                      <component id="99c8d" class="javax.swing.JButton" binding="slotButton9">
+                        <constraints>
+                          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Слот 9"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
                 </children>
               </grid>
               <component id="683fe" class="javax.swing.JList" binding="botList">

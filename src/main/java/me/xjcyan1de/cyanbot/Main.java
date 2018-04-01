@@ -3,12 +3,9 @@ package me.xjcyan1de.cyanbot;
 import me.xjcyan1de.cyanbot.config.Config;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.logger.LoggerInstaller;
-import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class Main {
@@ -23,7 +20,7 @@ public class Main {
 
         final Config config = new Config("config.yml");
 
-        Schedule.timer(()->{
+        /*Schedule.timer(()->{
             manager.getWorldMap().values()
                     .forEach(world -> {
                         System.out.println("world: ");
@@ -37,7 +34,7 @@ public class Main {
                             System.out.println("  " + count + ": " + size);
                         });
                     });
-        }, 1000, 1000);
+        }, 1000, 1000);*/
 
         mainFrame = new MainFrame(config, manager, logger);
         mainFrame.pack();
