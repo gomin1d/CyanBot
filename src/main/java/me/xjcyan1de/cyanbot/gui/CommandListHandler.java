@@ -3,6 +3,7 @@ package me.xjcyan1de.cyanbot.gui;
 import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.gui.commands.Command;
 import me.xjcyan1de.cyanbot.gui.commands.CommandChat;
+import me.xjcyan1de.cyanbot.gui.commands.CommandSpin;
 
 import javax.swing.*;
 
@@ -16,5 +17,6 @@ public class CommandListHandler {
 
     public static void init(DefaultListModel<String> listModel) {
         new CommandChat().register(listModel);
+        new CommandSpin().register(listModel);
     }
 }
