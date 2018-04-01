@@ -253,4 +253,12 @@ public class Player {
 
         return Objects.hash(username);
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "entityId=" + entityId +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

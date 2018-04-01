@@ -2,6 +2,7 @@ package me.xjcyan1de.cyanbot.gui.commands;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import me.xjcyan1de.cyanbot.Main;
 import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.gui.joystick.PointChangeEvent;
 import me.xjcyan1de.cyanbot.gui.joystick.SimpleJoystick;
@@ -28,6 +29,7 @@ public class CommandWalk extends Command {
         joystick = new SimpleJoystick(150);
         joystick.setPreferredSize(new Dimension(100, 100));
         joystick.addChangeListener(e -> {
+            Player[] selectedPlayers = Main.getMainFrame().getSelectedPlayers();
             final PointChangeEvent event = (PointChangeEvent) e;
             final Point p = event.p;
             double tempX = -p.getX() / 800;
@@ -37,16 +39,17 @@ public class CommandWalk extends Command {
             z = tempZ;
 
 
+
             if ((-0.0001 < x && x < 0.0001) && (-0.0001 < z && z < 0.0001)) {
-                for (Player player : players) {
+                for (Player player : selectedPlayers) {
                     TimerTask walkTask = walkTaskMap.get(player);
                     if (walkTask != null) {
                         walkTask.cancel();
+                        walkTaskMap.remove(player);
                     }
-                    walkTaskMap.put(player, walkTask);
                 }
             } else {
-                for (Player player : players) {
+                for (Player player : selectedPlayers) {
                     TimerTask walkTask = walkTaskMap.get(player);
                     if (walkTask == null) {
                         walkTask = Schedule.timer(() -> {

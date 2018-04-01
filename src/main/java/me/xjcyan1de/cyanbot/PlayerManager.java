@@ -2,8 +2,10 @@ package me.xjcyan1de.cyanbot;
 
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
-import java.util.*;
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +44,10 @@ public class PlayerManager {
     public void disconnectPlayer(Player player) {
         playerMap.remove(player.getUsername());
         service.submit(()-> player.getClient().getSession().disconnect("Final"));
+    }
+
+    public boolean isConnected(String name) {
+        return playerMap.containsKey(name) && !playerMap.get(name).isClose();
     }
 
     public Collection<Player> getPlayers() {

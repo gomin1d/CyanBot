@@ -2,6 +2,7 @@ package me.xjcyan1de.cyanbot.gui.commands;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import me.xjcyan1de.cyanbot.Main;
 import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.Location;
@@ -60,7 +61,8 @@ public class CommandSpin extends Command {
         });
 
         setListener(enableSpin, e -> {
-            for (Player player : players) {
+            Player[] selectedPlayers = Main.getMainFrame().getSelectedPlayers();
+            for (Player player : selectedPlayers) {
                 boolean enabled = enabledMap.getOrDefault(player, false);
                 TimerTask timerTask = timerTaskMap.getOrDefault(player, null);
                 enabled = !enabled;

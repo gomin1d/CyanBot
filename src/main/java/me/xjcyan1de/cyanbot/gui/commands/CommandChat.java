@@ -2,6 +2,7 @@ package me.xjcyan1de.cyanbot.gui.commands;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import me.xjcyan1de.cyanbot.Main;
 import me.xjcyan1de.cyanbot.Player;
 
 import javax.swing.*;
@@ -31,7 +32,8 @@ public class CommandChat extends Command {
             chatButton.removeActionListener(actionListener);
         }
         chatButton.addActionListener(e -> {
-            for (Player player : players) {
+            Player[] selectedPlayers = Main.getMainFrame().getSelectedPlayers();
+            for (Player player : selectedPlayers) {
                 player.sendMessage(chatField.getText());
             }
         });
