@@ -1,14 +1,12 @@
 package me.xjcyan1de.cyanbot;
 
-import me.xjcyan1de.cyanbot.utils.ReflectUtils;
+import me.xjcyan1de.cyanbot.gui.MainFrame;
+import me.xjcyan1de.cyanbot.logger.BotLogger;
+import me.xjcyan1de.cyanbot.utils.Schedule;
 
-import java.io.PrintStream;
-import java.lang.invoke.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.IntBinaryOperator;
+import java.util.logging.Logger;
 
 
 @SuppressWarnings("unchecked")
@@ -16,6 +14,20 @@ public class Test  {
 
     public static void main(String... arg) throws Throwable {
 
+    }
+
+    public static void joinBots() {
+        final BotManager manager = Main.getManager();
+        final MainFrame mainFrame = Main.getMainFrame();
+        final Logger logger = mainFrame.getLogger();
+
+        Schedule.timer(() -> {
+            String name = "CyanBot" + new Random().nextInt(10000);
+            System.out.println("Join " + name);
+            final Bot bot = new Bot(manager, mainFrame,
+                    new BotLogger(name, logger), name, "lgn.z904095z.bget.ru", 25565);
+            manager.connectBot(bot, "lgn.z904095z.bget.ru:25565");
+        }, 1000, 1000);
     }
 
     public static void test2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

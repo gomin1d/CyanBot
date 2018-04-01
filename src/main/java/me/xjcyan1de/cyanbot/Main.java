@@ -10,13 +10,14 @@ import java.util.logging.Logger;
 
 public class Main {
     private static MainFrame mainFrame;
+    private static BotManager manager;
 
     public static void main(String[] args) throws Exception {
         setUTF8();
 
         final Logger logger = LoggerInstaller.create("CyanBot", "CyanBot.log");
 
-        BotManager manager = new BotManager(logger);
+        manager = new BotManager(logger);
 
         final Config config = new Config("config.yml");
 
@@ -40,6 +41,7 @@ public class Main {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null); // по центу экрана
         mainFrame.setVisible(true);
+
     }
 
     private static void setUTF8() throws NoSuchFieldException, IllegalAccessException {
@@ -51,5 +53,9 @@ public class Main {
 
     public static MainFrame getMainFrame() {
         return mainFrame;
+    }
+
+    public static BotManager getManager() {
+        return manager;
     }
 }
