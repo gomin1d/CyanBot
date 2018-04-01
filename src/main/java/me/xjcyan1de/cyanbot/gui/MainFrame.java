@@ -172,8 +172,7 @@ public class MainFrame extends JFrame {
         commandList.addListSelectionListener(e -> {
             final int index = commandList.getSelectedIndex();
             if (index != -1) {
-                Bot[] bots = getSelectedBots();
-                CommandListHandler.createPanel(commandPanel, index, bots);
+                CommandListHandler.createPanel(commandPanel, index);
             }
         });
     }
@@ -192,10 +191,6 @@ public class MainFrame extends JFrame {
         final Bot bot = new Bot(manager, this,
                 new BotLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
         manager.connectBot(bot, ipText);
-
-        final DefaultListModel model = (DefaultListModel) botList.getModel();
-        model.addElement(bot.getUsername());
-        botList.setModel(model);
 
         Schedule.later(() -> {
             for (String cmd : joinCommands.getText().split("\n")) {

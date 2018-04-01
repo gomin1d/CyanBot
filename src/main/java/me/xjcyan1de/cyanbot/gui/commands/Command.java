@@ -1,7 +1,5 @@
 package me.xjcyan1de.cyanbot.gui.commands;
 
-import me.xjcyan1de.cyanbot.Bot;
-
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
@@ -19,7 +17,7 @@ public abstract class Command {
         return title;
     }
 
-    public abstract void execute(JPanel jPanel, Bot... bots);
+    public abstract void initPanel(JPanel jPanel);
 
     public void register(DefaultListModel<String> listModel) {
         listModel.addElement(getTitle());

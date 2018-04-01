@@ -39,7 +39,7 @@ public class CommandSpin extends Command {
     }
 
     @Override
-    public void execute(JPanel commandPanel, Bot... bots) {
+    public void initPanel(JPanel commandPanel) {
         commandPanel.getRootPane().setDefaultButton(enableSpin);
         commandPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         commandPanel.add(enableSpin, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

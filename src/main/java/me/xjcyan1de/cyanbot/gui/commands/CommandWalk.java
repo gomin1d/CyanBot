@@ -25,7 +25,7 @@ public class CommandWalk extends Command {
     }
 
     @Override
-    public void execute(JPanel commandPanel, Bot... bots) {
+    public void initPanel(JPanel commandPanel) {
         joystick = new SimpleJoystick(150);
         joystick.setPreferredSize(new Dimension(100, 100));
         joystick.addChangeListener(e -> {
