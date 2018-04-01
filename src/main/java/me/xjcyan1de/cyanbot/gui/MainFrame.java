@@ -9,12 +9,8 @@ import me.xjcyan1de.cyanbot.logger.PlayerLogger;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -181,7 +177,7 @@ public class MainFrame extends JFrame {
         name.setText("CyanBot");
         panel1.add(name, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         joinCommands = new JTextArea();
-        joinCommands.setText("/reg test123 test123\n/login test123");
+        joinCommands.setText("");
         panel1.add(joinCommands, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         leave = new JButton();
         leave.setEnabled(false);
@@ -202,13 +198,9 @@ public class MainFrame extends JFrame {
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.setBorder(BorderFactory.createTitledBorder("IP"));
         ip = new JTextField();
-        ip.setText("mc.JustVillage.ru:25565");
+        ip.setText("mc.JustVillage.ru");
         panel2.add(ip, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         historyIp = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
-        defaultComboBoxModel1.addElement("localhost");
-        defaultComboBoxModel1.addElement("mc.mineland.net:25565");
-        historyIp.setModel(defaultComboBoxModel1);
         panel2.add(historyIp, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));

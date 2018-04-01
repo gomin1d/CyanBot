@@ -42,7 +42,6 @@ public class ConfigSavedJFrameData {
         if (!history.isEmpty()) {
             historyIp.setSelectedIndex(0);
         }
-
         ip.setText(history.get(0));
 
         mainFrame.getAutoJoin().setSelected(config.getOrSet("auto-join", false));
