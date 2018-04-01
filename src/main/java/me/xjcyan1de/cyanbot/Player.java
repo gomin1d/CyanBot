@@ -7,14 +7,16 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePack
 import com.github.steveice10.packetlib.Client;
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.event.session.SessionListener;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import com.sun.istack.internal.Nullable;
+import me.xjcyan1de.cyanbot.events.GenerateAccessKeyEvent;
+import me.xjcyan1de.cyanbot.events.PlayerChatEvent;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.handlers.*;
-import me.xjcyan1de.cyanbot.listeners.ChatListener;
-import me.xjcyan1de.cyanbot.listeners.ChatToGuiListener;
-import me.xjcyan1de.cyanbot.listeners.CloseConnectionListener;
-import me.xjcyan1de.cyanbot.listeners.PacketListener;
+import me.xjcyan1de.cyanbot.listeners.*;
+import me.xjcyan1de.cyanbot.listeners.event.EventSystem;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
 
@@ -30,7 +32,6 @@ public class Player {
     private int entityId;
 
     private String username;
-    private Logger logger;
     private MinecraftProtocol protocol;
 
     private Client client;
@@ -43,10 +44,13 @@ public class Player {
     private Vector speed = new Vector();
 
     private List<Handler> handlers = new ArrayList<>();
-    private List<SessionAdapter> listeners = new ArrayList<>();
+    private List<SessionListener> listeners = new ArrayList<>();
 
     private TimerTask timerTask;
     private boolean debug = false;
+
+    private Logger logger;
+    private EventSystem eventSystem;
 
     String accessKey;
 
@@ -55,9 +59,15 @@ public class Player {
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
         this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
+        this.eventSystem = new EventSystem(logger);
 
+        this.registerEvents();
         this.registerHandlers();
         this.registerListeners(mainFrame, manager);
+    }
+
+    private void registerEvents() {
+        this.eventSystem.registerLisneter(new ChatEvents(this));
     }
 
     private void registerListeners(MainFrame mainFrame, PlayerManager manager) {
@@ -65,6 +75,7 @@ public class Player {
         this.listeners.add(new ChatListener(this));
         this.listeners.add(new ChatToGuiListener(mainFrame));
         this.listeners.add(new CloseConnectionListener(this, manager, logger));
+        this.listeners.add(new PlayerListener(this, eventSystem)); // для системы иветов
     }
 
     private void registerHandlers() {
@@ -77,6 +88,10 @@ public class Player {
         this.handlers.add(new ValidateHandler(this));
         this.handlers.add(new UpdatePositionHandler(this));
         this.handlers.add(new DebugHandler(this));
+    }
+
+    public EventSystem getEventSystem() {
+        return eventSystem;
     }
 
     public void startBot() {
@@ -92,7 +107,7 @@ public class Player {
         if (timerTask != null) {
             timerTask.cancel();
         }
-       // this.getWorld().clearChunks(); // зачем?
+        // this.getWorld().clearChunks(); // зачем?
     }
 
     private boolean beforeConnect = true;
@@ -105,8 +120,10 @@ public class Player {
     }
 
     public void sendMessage(String message) {
-        sendPacket(new ClientChatPacket(message));
-        System.out.println(username + " -> " + message);
+        final PlayerChatEvent event = eventSystem.callEvent(new PlayerChatEvent(this, message));
+        if (!event.isCancelled()) {
+            sendPacket(new ClientChatPacket(event.getMessage()));
+        }
     }
 
     public String getUsername() {
@@ -211,11 +228,17 @@ public class Player {
         return !beforeConnect && !client.getSession().isConnected();
     }
 
+    @Nullable
     public String generateAccessKey() {
         Random random = new Random();
         this.accessKey = String.valueOf(1000 + random.nextInt(8999));
-        System.out.println("Сгенерирован новый ключ: " + accessKey);
-        this.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
-        return accessKey;
+        if (!eventSystem.callEvent(new GenerateAccessKeyEvent(this, "XjCyan1de", accessKey)).isCancelled()) {
+            logger.info("Сгенерирован новый ключ: " + accessKey);
+            eventSystem.callEvent(accessKey);
+            this.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
+            return accessKey;
+        }
+
+        return null;
     }
 }

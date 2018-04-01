@@ -39,9 +39,7 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties>
-                      <text value="CyanBot"/>
-                    </properties>
+                    <properties/>
                   </component>
                   <component id="7ea5f" class="javax.swing.JTextArea" binding="joinCommands">
                     <constraints>
@@ -49,9 +47,7 @@
                         <preferred-size width="150" height="50"/>
                       </grid>
                     </constraints>
-                    <properties>
-                      <text value=""/>
-                    </properties>
+                    <properties/>
                   </component>
                   <component id="42779" class="javax.swing.JButton" binding="leave">
                     <constraints>
@@ -59,7 +55,7 @@
                     </constraints>
                     <properties>
                       <enabled value="false"/>
-                      <text value="Отключиться"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="e3ffd" class="javax.swing.JTextField" binding="status">
@@ -70,24 +66,19 @@
                     </constraints>
                     <properties>
                       <editable value="false"/>
-                      <text value="Статус"/>
                     </properties>
                   </component>
                   <component id="5be8b" class="javax.swing.JCheckBox" binding="autoJoin">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties>
-                      <text value="Заходить автоматически"/>
-                    </properties>
+                    <properties/>
                   </component>
                   <component id="dad37" class="javax.swing.JButton" binding="join">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties>
-                      <text value="Подключиться"/>
-                    </properties>
+                    <properties/>
                   </component>
                 </children>
               </grid>
@@ -105,9 +96,7 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties>
-                      <text value="mc.JustVillage.ru"/>
-                    </properties>
+                    <properties/>
                   </component>
                   <component id="470d3" class="javax.swing.JComboBox" binding="historyIp">
                     <constraints>
@@ -139,7 +128,6 @@
                         </constraints>
                         <properties>
                           <enabled value="false"/>
-                          <text value="Сообщение"/>
                         </properties>
                       </component>
                       <component id="9353c" class="javax.swing.JTextField" binding="messageText">
@@ -148,9 +136,7 @@
                             <preferred-size width="150" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties>
-                          <text value="Привет, друзья"/>
-                        </properties>
+                        <properties/>
                       </component>
                     </children>
                   </grid>
@@ -168,9 +154,7 @@
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties>
-                      <text value="Получить ключ"/>
-                    </properties>
+                    <properties/>
                   </component>
                 </children>
               </grid>
@@ -212,7 +196,6 @@
                       <doubleBuffered value="false"/>
                       <horizontalTextPosition value="0"/>
                       <margin top="10" left="13" bottom="2" right="14"/>
-                      <text value="Включить/выключить"/>
                     </properties>
                   </component>
                   <component id="b5579" class="javax.swing.JSlider" binding="sliderSpin">
@@ -230,9 +213,7 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties>
-                      <text value="0"/>
-                    </properties>
+                    <properties/>
                   </component>
                 </children>
               </grid>
@@ -259,9 +240,7 @@
             <children>
               <component id="da497" class="javax.swing.JTextArea" binding="chat">
                 <constraints/>
-                <properties>
-                  <text value="чат"/>
-                </properties>
+                <properties/>
               </component>
             </children>
           </scrollpane>
@@ -276,9 +255,7 @@
             <children>
               <component id="6bc62" class="javax.swing.JTextArea" binding="logs">
                 <constraints/>
-                <properties>
-                  <text value="логи&#10;"/>
-                </properties>
+                <properties/>
               </component>
             </children>
           </scrollpane>
