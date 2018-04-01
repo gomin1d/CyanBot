@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
     private JButton leave;
     private JTextField status;
     private JComboBox historyIp;
-    private JRadioButton hasJoin;
+    private JCheckBox autoJoin;
     private Config config;
     private PlayerManager manager;
     private Logger logger;
@@ -49,12 +49,17 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         final ConfigSavedJFrameData configSaved = new ConfigSavedJFrameData(this, config);
+        configSaved.loadConfig();
         configSaved.register();
 
         logger.addHandler(new FormLoggerHandler(logs));
 
         this.registerListeners();
         this.scheduleUpdateStatus(this, manager);
+
+        if (autoJoin.isSelected()) {
+            this.onJoin();
+        }
     }
 
     private void scheduleUpdateStatus(MainFrame mainFrame, PlayerManager manager) {
@@ -77,6 +82,10 @@ public class MainFrame extends JFrame {
         }, 0, 500);
     }
 
+    public JCheckBox getAutoJoin() {
+        return autoJoin;
+    }
+
     public JTextField getStatus() {
         return status;
     }
@@ -92,18 +101,7 @@ public class MainFrame extends JFrame {
 
     @SuppressWarnings("unchecked")
     private void registerListeners() {
-        join.addActionListener(e -> {
-            String ipText = ip.getText();
-            final String[] ipPort = ipText.split(":");
-            final Player player = new Player(manager, this,
-                    new PlayerLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
-            manager.connectPlayer(player);
-            Schedule.later(() -> {
-                for (String cmd : joinCommands.getText().split("\n")) {
-                    player.sendMessage(cmd);
-                }
-            }, 1000);
-        });
+        join.addActionListener(e -> this.onJoin());
 
         leave.addActionListener(e -> {
             final Player player = manager.getPlayer(name.getText());
@@ -118,17 +116,32 @@ public class MainFrame extends JFrame {
                 player.sendMessage(messageText.getText());
             }
         });
+
+        autoJoin.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                final Player player = manager.getPlayer(name.getText());
+                if (player == null) {
+                    this.onJoin();
+                }
+            }
+        });
+    }
+
+    private void onJoin() {
+        String ipText = ip.getText();
+        final String[] ipPort = ipText.split(":");
+        final Player player = new Player(manager, this,
+                new PlayerLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
+        manager.connectPlayer(player);
+        Schedule.later(() -> {
+            for (String cmd : joinCommands.getText().split("\n")) {
+                player.sendMessage(cmd);
+            }
+        }, 1000);
     }
 
     public JTextField getIp() {
         return ip;
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return contentPane;
     }
 
     public JComboBox getHistoryIp() {
@@ -161,7 +174,7 @@ public class MainFrame extends JFrame {
         contentPane = new JPanel();
         contentPane.setLayout(new GridLayoutManager(4, 1, new Insets(10, 10, 10, 10), -1, -1));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.setBorder(BorderFactory.createTitledBorder("Данные"));
         name = new JTextField();
@@ -170,9 +183,6 @@ public class MainFrame extends JFrame {
         joinCommands = new JTextArea();
         joinCommands.setText("/reg test123 test123\n/login test123");
         panel1.add(joinCommands, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
-        join = new JButton();
-        join.setText("Подключиться");
-        panel1.add(join, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         leave = new JButton();
         leave.setEnabled(false);
         leave.setText("Отключиться");
@@ -180,7 +190,13 @@ public class MainFrame extends JFrame {
         status = new JTextField();
         status.setEditable(false);
         status.setText("Статус");
-        panel1.add(status, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        panel1.add(status, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        autoJoin = new JCheckBox();
+        autoJoin.setText("Заходить автоматически");
+        panel1.add(autoJoin, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        join = new JButton();
+        join.setText("Подключиться");
+        panel1.add(join, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -223,5 +239,12 @@ public class MainFrame extends JFrame {
         logs = new JTextArea();
         logs.setText("логи\n");
         logsScroll.setViewportView(logs);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
     }
 }

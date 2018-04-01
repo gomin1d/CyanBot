@@ -15,6 +15,7 @@ public class ConfigSavedJFrameData {
     private MainFrame mainFrame;
     private Config config;
     private String configJoinCommands;
+    private String configUsername;
 
     public ConfigSavedJFrameData(MainFrame mainFrame, Config config) {
         this.mainFrame = mainFrame;
@@ -24,7 +25,7 @@ public class ConfigSavedJFrameData {
     private boolean fixHistory = true;
 
     @SuppressWarnings("unchecked")
-    private void loadConfig(Config config) {
+    public void loadConfig() {
         final JTextArea joinCommands = mainFrame.getJoinCommands();
 
         final JComboBox historyIp = mainFrame.getHistoryIp();
@@ -33,6 +34,7 @@ public class ConfigSavedJFrameData {
         joinCommands.setText(configJoinCommands = String.join("\n", config.getOrSet("join-commands", Arrays.asList("/reg test123 test123",
                 "/login test123"))));
 
+        mainFrame.getUsername().setText(configUsername = config.getOrSet("username", "CyanBot"));
 
         historyIp.removeAllItems();
         final List<String> history = config.getOrSet("history-ip", Arrays.asList("localhost", "mc.JustVillage.ru:25565"));
@@ -42,12 +44,12 @@ public class ConfigSavedJFrameData {
         }
 
         ip.setText(history.get(0));
+
+        mainFrame.getAutoJoin().setSelected(config.getOrSet("auto-join", false));
     }
 
     @SuppressWarnings("unchecked")
     public void register() {
-        this.loadConfig(config);
-
         final JComboBox historyIp = mainFrame.getHistoryIp();
         final JTextField ip = mainFrame.getIp();
         final JTextArea joinCommands = mainFrame.getJoinCommands();
@@ -70,6 +72,10 @@ public class ConfigSavedJFrameData {
             if (!configJoinCommands.equals(joinCommands.getText())) {
                 config.setAndSave("join-commands", Arrays.asList((configJoinCommands = joinCommands.getText()).split("\n")));
             }
+
+            if (!configUsername.equals(mainFrame.getUsername().getText())) {
+                config.setAndSave("username", configUsername = mainFrame.getUsername().getText());
+            }
         });
 
         historyIp.addItemListener(e -> {
@@ -78,6 +84,8 @@ public class ConfigSavedJFrameData {
             }
         });
 
-
+        mainFrame.getAutoJoin().addItemListener(e->{
+            config.setAndSave("auto-join", e.getStateChange() == ItemEvent.SELECTED);
+        });
     }
 }
