@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MainFrame extends JFrame {
@@ -37,6 +38,7 @@ public class MainFrame extends JFrame {
     private JSlider sliderSpin;
     private JButton enableSpin;
     private JTextField valueSpin;
+    private JList botList;
     private Config config;
     private PlayerManager manager;
     private Logger logger;
@@ -119,6 +121,9 @@ public class MainFrame extends JFrame {
             final Player player = manager.getPlayer(name.getText());
             if (player != null) {
                 manager.disconnectPlayer(player);
+                final DefaultListModel model = (DefaultListModel) botList.getModel();
+                model.removeElement(player.getUsername());
+                botList.setModel(model);
             }
         });
 
@@ -144,19 +149,27 @@ public class MainFrame extends JFrame {
 
         commandList.addListSelectionListener(e -> {
             final int index = commandList.getSelectedIndex();
-            final Player player = manager.getPlayer(name.getText());
-            if (player != null) {
-                CommandListHandler.createPanel(commandPanel, index, player);
+            if (index != -1) {
+                Player[] players = (Player[]) botList.getSelectedValuesList().stream()
+                        .map(name -> manager.getPlayer(String.valueOf(name)))
+                        .filter(Objects::nonNull).toArray(Player[]::new);
+                CommandListHandler.createPanel(commandPanel, index, players);
             }
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void onJoin() {
         String ipText = ip.getText();
         final String[] ipPort = ipText.split(":");
         final Player player = new Player(manager, this,
                 new PlayerLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
         manager.connectPlayer(player);
+
+        final DefaultListModel model = (DefaultListModel) botList.getModel();
+        model.addElement(player.getUsername());
+        botList.setModel(model);
+
         Schedule.later(() -> {
             for (String cmd : joinCommands.getText().split("\n")) {
                 player.sendMessage(cmd);
@@ -258,15 +271,16 @@ public class MainFrame extends JFrame {
         getKey.setText("Получить ключ");
         panel6.add(getKey, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel7 = new JPanel();
-        panel7.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel7.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1.addTab("Команды", panel7);
         commandList = new JList();
         final DefaultListModel defaultListModel1 = new DefaultListModel();
         commandList.setModel(defaultListModel1);
+        commandList.setSelectionMode(0);
         panel7.add(commandList, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         commandPanel = new JPanel();
         commandPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel7.add(commandPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel7.add(commandPanel, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         enableSpin = new JButton();
         enableSpin.setAlignmentX(1.0f);
         enableSpin.setDefaultCapable(true);
@@ -282,6 +296,15 @@ public class MainFrame extends JFrame {
         valueSpin = new JTextField();
         valueSpin.setText("0");
         commandPanel.add(valueSpin, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        botList = new JList();
+        final DefaultListModel defaultListModel2 = new DefaultListModel();
+        defaultListModel2.addElement("Test1");
+        defaultListModel2.addElement("Test2");
+        defaultListModel2.addElement("Test3");
+        defaultListModel2.addElement("Test4");
+        defaultListModel2.addElement("Test5");
+        botList.setModel(defaultListModel2);
+        panel7.add(botList, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         final JPanel panel8 = new JPanel();
         panel8.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel8, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));

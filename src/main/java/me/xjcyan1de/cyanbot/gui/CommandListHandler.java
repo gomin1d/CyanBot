@@ -9,10 +9,10 @@ import me.xjcyan1de.cyanbot.gui.commands.CommandWalk;
 import javax.swing.*;
 
 public class CommandListHandler {
-    public static void createPanel(JPanel commandPanel, int selected, Player player) {
+    public static void createPanel(JPanel commandPanel, int selected, Player... players) {
         commandPanel.removeAll();
         final Command command = Command.commandList.get(selected);
-        command.execute(commandPanel, player);
+        command.execute(commandPanel, players);
         commandPanel.updateUI();
     }
 

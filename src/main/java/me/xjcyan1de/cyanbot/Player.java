@@ -17,12 +17,10 @@ import me.xjcyan1de.cyanbot.listeners.CloseConnectionListener;
 import me.xjcyan1de.cyanbot.listeners.PacketListener;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
+import me.xjcyan1de.cyanbot.world.Vector;
 
 import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Player {
@@ -217,5 +215,19 @@ public class Player {
         System.out.println("Сгенерирован новый ключ: " + accessKey);
         this.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
         return accessKey;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return Objects.equals(username, player.username);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(username);
     }
 }

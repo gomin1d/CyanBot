@@ -22,7 +22,7 @@ public class CommandChat extends Command {
     }
 
     @Override
-    public void execute(JPanel commandPanel, Player player) {
+    public void execute(JPanel commandPanel, Player... players) {
         commandPanel.getRootPane().setDefaultButton(chatButton);
         commandPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         commandPanel.add(chatField, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
@@ -31,7 +31,9 @@ public class CommandChat extends Command {
             chatButton.removeActionListener(actionListener);
         }
         chatButton.addActionListener(e -> {
-            player.sendMessage(chatField.getText());
+            for (Player player : players) {
+                player.sendMessage(chatField.getText());
+            }
         });
     }
 }

@@ -19,7 +19,7 @@ public abstract class Command {
         return title;
     }
 
-    public abstract void execute(JPanel jPanel, Player player);
+    public abstract void execute(JPanel jPanel, Player... players);
 
     public void register(DefaultListModel<String> listModel) {
         listModel.addElement(getTitle());

@@ -8,6 +8,7 @@ import me.xjcyan1de.cyanbot.world.Location;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.TimerTask;
 
 public class CommandSpin extends Command {
@@ -15,8 +16,8 @@ public class CommandSpin extends Command {
     private final JButton enableSpin;
     private final JSlider sliderSpin;
     private final JTextField valueSpin;
-    private boolean enabled = false;
-    private TimerTask timerTask;
+    private HashMap<Player, Boolean> enabledMap = new HashMap<>();
+    private HashMap<Player, TimerTask> timerTaskMap = new HashMap<>();
 
     public CommandSpin() {
         super("Вращение");
@@ -37,7 +38,7 @@ public class CommandSpin extends Command {
     }
 
     @Override
-    public void execute(JPanel commandPanel, Player player) {
+    public void execute(JPanel commandPanel, Player... players) {
         commandPanel.getRootPane().setDefaultButton(enableSpin);
         commandPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         commandPanel.add(enableSpin, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -59,16 +60,22 @@ public class CommandSpin extends Command {
         });
 
         setListener(enableSpin, e -> {
-            enabled = !enabled;
-            if (enabled) {
-                timerTask = Schedule.timer(() -> {
-                    final Location loc = player.getLoc();
-                    loc.setYaw(loc.getYaw() + sliderSpin.getValue());
-                }, 0, 50);
-            } else {
-                if (timerTask != null) {
-                    timerTask.cancel();
+            for (Player player : players) {
+                boolean enabled = enabledMap.getOrDefault(player, false);
+                TimerTask timerTask = timerTaskMap.getOrDefault(player, null);
+                enabled = !enabled;
+                if (enabled) {
+                    timerTask = Schedule.timer(() -> {
+                        final Location loc = player.getLoc();
+                        loc.setYaw(loc.getYaw() + sliderSpin.getValue());
+                    }, 0, 50);
+                } else {
+                    if (timerTask != null) {
+                        timerTask.cancel();
+                    }
                 }
+                enabledMap.put(player, enabled);
+                timerTaskMap.put(player, timerTask);
             }
         });
     }
