@@ -9,7 +9,8 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlaye
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
+import me.xjcyan1de.cyanbot.events.CommandEvent;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import java.util.LinkedList;
@@ -17,11 +18,11 @@ import java.util.List;
 
 
 public class ChatListener extends SessionAdapter {
-    Player player;
-    List<String> accessPatterns = new LinkedList<>();
+    private Bot bot;
+    private List<String> accessPatterns = new LinkedList<>();
 
-    public ChatListener(Player player) {
-        this.player = player;
+    public ChatListener(Bot bot) {
+        this.bot = bot;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class ChatListener extends SessionAdapter {
         if (!(event.getPacket() instanceof ServerChatPacket)) return;
         ServerChatPacket packet = event.getPacket();
         final String message = packet.getMessage().getFullText();
-//        System.out.println(player.getUsername() + " <- " + message);
+//        System.out.println(bot.getUsername() + " <- " + message);
         onMessage(message);
     }
 
@@ -37,7 +38,7 @@ public class ChatListener extends SessionAdapter {
         final String[] split = message.split(" ");
         int readFrom = -1;
         for (int i = 0; i < split.length; i++) {
-            if (split[i].startsWith(player.getUsername() + ",")) {
+            if (split[i].startsWith(bot.getUsername() + ",")) {
                 readFrom = i + 1 < split.length ? i + 1 : -1;
                 break;
             }
@@ -52,17 +53,22 @@ public class ChatListener extends SessionAdapter {
         System.arraycopy(split, readFrom, args, 0, args.length);
 
         if (!hasAccess(senderPattern)) {
-            if ((args.length == 2 && args[0].equals("ключ") && args[1].equals(player.getAccessKey())) ||
-                    args.length == 1 && args[0].equals(player.getAccessKey())) {
+            if ((args.length == 2 && args[0].equals("ключ") && args[1].equals(bot.getAccessKey())) ||
+                    args.length == 1 && args[0].equals(bot.getAccessKey())) {
                 int totalLenght = 0;
                 for (String arg : args) totalLenght += arg.length();
                 final String pattern = senderPattern.substring(0, senderPattern.length() - totalLenght - 1);
                 accessPatterns.add(pattern);
                 System.out.println("Добавлен патерн: " + pattern);
-                player.sendMessage("Успешная авторизация!");
-                player.generateAccessKey();
+                bot.sendMessage("Успешная авторизация!");
+                bot.generateAccessKey();
             }
         } else {
+
+            final String[] argsWithoutCommand = new String[args.length - 1];
+            System.arraycopy(args, 1, argsWithoutCommand, 0, args.length - 1);
+            bot.getEventSystem().callEvent(new CommandEvent(bot, args[0], argsWithoutCommand)); // кидаем ивент команды
+
             switch (args[0].toLowerCase()) {
                 case "say":
                 case "напиши":
@@ -73,7 +79,7 @@ public class ChatListener extends SessionAdapter {
                             sb.append(args[i]).append(" ");
                         }
                         sb.setLength(sb.length() - 1);
-                        player.sendMessage(sb.toString());
+                        bot.sendMessage(sb.toString());
                     }
                     break;
                 }
@@ -86,7 +92,7 @@ public class ChatListener extends SessionAdapter {
                         }
                         sb.setLength(sb.length() - 1);
                         Schedule.timer(() -> {
-                            player.sendMessage(sb.toString());
+                            bot.sendMessage(sb.toString());
                         }, 1000, 1000);
                     }
                     break;
@@ -98,7 +104,7 @@ public class ChatListener extends SessionAdapter {
                     double y = Double.parseDouble(args[2]);
                     double z = Double.parseDouble(args[3]);
 
-                    player.getLoc().add(x, y, z);
+                    bot.getLoc().add(x, y, z);
 
                     break;
                 }
@@ -106,24 +112,24 @@ public class ChatListener extends SessionAdapter {
                 case "кружись": {
                     final int[] yaw = {0};
                     Schedule.timer(() -> {
-                        player.getLoc().setYaw(yaw[0]);
+                        bot.getLoc().setYaw(yaw[0]);
                         yaw[0] += 30;
                     }, 50, 50);
                     break;
                 }
                 case "drop":
                 case "выкинь": {
-                    player.sendPacket(new ClientPlayerActionPacket(
+                    bot.sendPacket(new ClientPlayerActionPacket(
                             PlayerAction.DROP_ITEM,
-                            new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                            new Position(bot.getLoc().getBlockX(), bot.getLoc().getBlockY(), bot.getLoc().getBlockZ()),
                             BlockFace.UP));
                     break;
                 }
                 case "swap":
                 case "переложи": {
-                    player.sendPacket(new ClientPlayerActionPacket(
+                    bot.sendPacket(new ClientPlayerActionPacket(
                             PlayerAction.SWAP_HANDS,
-                            new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                            new Position(bot.getLoc().getBlockX(), bot.getLoc().getBlockY(), bot.getLoc().getBlockZ()),
                             BlockFace.UP));
                     break;
                 }
@@ -132,32 +138,32 @@ public class ChatListener extends SessionAdapter {
                     if (args.length != 2) return;
                     int delay = Integer.parseInt(args[1]);
                     Schedule.timer(() -> {
-                        player.sendPacket(new ClientPlayerActionPacket(
+                        bot.sendPacket(new ClientPlayerActionPacket(
                                 PlayerAction.SWAP_HANDS,
-                                new Position(player.getLoc().getBlockX(), player.getLoc().getBlockY(), player.getLoc().getBlockZ()),
+                                new Position(bot.getLoc().getBlockX(), bot.getLoc().getBlockY(), bot.getLoc().getBlockZ()),
                                 BlockFace.UP));
                     }, delay, delay);
                     break;
                 }
                 case "rightclick":
                 case "пкм": {
-                    player.sendPacket(new ClientPlayerUseItemPacket(Hand.MAIN_HAND));
+                    bot.sendPacket(new ClientPlayerUseItemPacket(Hand.MAIN_HAND));
                     break;
                 }
                 case "deus": {
                     if (args.length == 2 && args[1].equalsIgnoreCase("vult")) {
-                        player.sendMessage("Ave Maria!");
+                        bot.sendMessage("Ave Maria!");
                     }
                     break;
                 }
                 case "слава": {
                     if (args.length == 2 && args[1].equalsIgnoreCase("украине")) {
-                        player.sendMessage("ГЕРОЯМ СЛАВА!");
+                        bot.sendMessage("ГЕРОЯМ СЛАВА!");
                     }
                     break;
                 }
                 default: {
-                    // player.sendMessage("Аргументы: "+Arrays.toString(args));
+
                 }
             }
         }
