@@ -2,8 +2,8 @@ package me.xjcyan1de.cyanbot.gui.commands;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.Main;
-import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.Location;
 
@@ -17,8 +17,8 @@ public class CommandSpin extends Command {
     private final JButton enableSpin;
     private final JSlider sliderSpin;
     private final JTextField valueSpin;
-    private HashMap<Player, Boolean> enabledMap = new HashMap<>();
-    private HashMap<Player, TimerTask> timerTaskMap = new HashMap<>();
+    private HashMap<Bot, Boolean> enabledMap = new HashMap<>();
+    private HashMap<Bot, TimerTask> timerTaskMap = new HashMap<>();
 
     public CommandSpin() {
         super("Вращение");
@@ -39,7 +39,7 @@ public class CommandSpin extends Command {
     }
 
     @Override
-    public void execute(JPanel commandPanel, Player... players) {
+    public void execute(JPanel commandPanel, Bot... bots) {
         commandPanel.getRootPane().setDefaultButton(enableSpin);
         commandPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         commandPanel.add(enableSpin, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -61,14 +61,14 @@ public class CommandSpin extends Command {
         });
 
         setListener(enableSpin, e -> {
-            Player[] selectedPlayers = Main.getMainFrame().getSelectedPlayers();
-            for (Player player : selectedPlayers) {
-                boolean enabled = enabledMap.getOrDefault(player, false);
-                TimerTask timerTask = timerTaskMap.getOrDefault(player, null);
+            Bot[] selectedBots = Main.getMainFrame().getSelectedBots();
+            for (Bot bot : selectedBots) {
+                boolean enabled = enabledMap.getOrDefault(bot, false);
+                TimerTask timerTask = timerTaskMap.getOrDefault(bot, null);
                 enabled = !enabled;
                 if (enabled) {
                     timerTask = Schedule.timer(() -> {
-                        final Location loc = player.getLoc();
+                        final Location loc = bot.getLoc();
                         loc.setYaw(loc.getYaw() + sliderSpin.getValue());
                     }, 0, 50);
                 } else {
@@ -76,8 +76,8 @@ public class CommandSpin extends Command {
                         timerTask.cancel();
                     }
                 }
-                enabledMap.put(player, enabled);
-                timerTaskMap.put(player, timerTask);
+                enabledMap.put(bot, enabled);
+                timerTaskMap.put(bot, timerTask);
             }
         });
     }

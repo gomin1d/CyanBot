@@ -16,18 +16,18 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.Block;
 import me.xjcyan1de.cyanbot.world.Chunk;
 import me.xjcyan1de.cyanbot.world.Location;
 
-public class PacketListener extends SessionAdapter {
+public class PacketWorldListener extends SessionAdapter {
 
-    private Player player;
+    private Bot bot;
 
-    public PacketListener(Player player) {
-        this.player = player;
+    public PacketWorldListener(Bot bot) {
+        this.bot = bot;
     }
 
     @Override
@@ -36,35 +36,32 @@ public class PacketListener extends SessionAdapter {
             Packet packetHandle = event.getPacket();
             if (packetHandle instanceof ServerJoinGamePacket) {
                 ServerJoinGamePacket packet = (ServerJoinGamePacket) packetHandle;
-                player.setEntityId(packet.getEntityId());
-                player.onJoin(packet);
+                bot.setEntityId(packet.getEntityId());
+                bot.onJoin(packet);
             } else if (packetHandle instanceof ServerPlayerPositionRotationPacket) {
                 ServerPlayerPositionRotationPacket packet = (ServerPlayerPositionRotationPacket) packetHandle;
                 Location location = new Location(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
-                player.setLoc(location);
+                bot.setLoc(location);
 
-                //player.sendMessage("Меня тпхнуло: "+location);
+                //bot.sendMessage("Меня тпхнуло: "+location);
 
                 //System.out.println(" \nТелепортируем : ["+location.getX()+" "+location.getY()+" "+location.getZ()+"]");
-                player.sendPacket(new ClientTeleportConfirmPacket(packet.getTeleportId()));
-                //player.groundHandler.move(location);
+                bot.sendPacket(new ClientTeleportConfirmPacket(packet.getTeleportId()));
+                //bot.groundHandler.move(location);
             } else if (packetHandle instanceof ServerChunkDataPacket) {
                 ServerChunkDataPacket packet = (ServerChunkDataPacket) packetHandle;
-                Chunk chunk = new Chunk(player.getWorld(), packet.getColumn());
+                bot.getWorld().mergeChunk(bot, packet.getColumn());
 
-                player.getWorld().mergeChunks(chunk);
-
-                //System.out.println("Загрузили чанк: " + chunk.getX() + " " + chunk.getZ());
             } else if (packetHandle instanceof ServerUnloadChunkPacket) {
                 ServerUnloadChunkPacket packet = (ServerUnloadChunkPacket) packetHandle;
-                Chunk chunk = player.getWorld().getChunkAt(packet.getX(), packet.getZ());
-                player.getWorld().removeChunk(chunk);
-                //System.out.println("Удалили чанк: " + chunk.getX() + " " + chunk.getZ());
+                Chunk chunk = bot.getWorld().getChunkAt(packet.getX(), packet.getZ());
+                bot.getWorld().removeView(bot, chunk);
+
             } else if (packetHandle instanceof ServerPlayerHealthPacket) {
                 ServerPlayerHealthPacket packet = (ServerPlayerHealthPacket) packetHandle;
                 if (packet.getHealth() == 0) {
                     Schedule.later(() -> {
-                        player.sendPacket(new ClientRequestPacket(ClientRequest.RESPAWN));
+                        bot.sendPacket(new ClientRequestPacket(ClientRequest.RESPAWN));
                     }, 500);
                 }
             } else if (packetHandle instanceof ServerBlockChangePacket) {
@@ -72,7 +69,7 @@ public class PacketListener extends SessionAdapter {
                 BlockState blockState = packet.getRecord().getBlock();
                 if (blockState != null) {
                     Position position = packet.getRecord().getPosition();
-                    Block block = player.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
+                    Block block = bot.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
                     if (block != null) {
                         block.setIdAndData(blockState.getId(), blockState.getData());
                         //System.out.println("Новый блок = " + block);
@@ -88,7 +85,7 @@ public class PacketListener extends SessionAdapter {
 
                         ) {
                 } else {
-                    //System.out.println(player.getUsername()+" <- "+packetHandle);
+                    //System.out.println(bot.getUsername()+" <- "+packetHandle);
                 }
             }
         } catch (Exception e) {
@@ -98,8 +95,10 @@ public class PacketListener extends SessionAdapter {
 
     @Override
     public void disconnected(DisconnectedEvent event) {
-        System.out.println(player.getUsername() + " ✖ " + Message.fromString(event.getReason()).getFullText());
-        player.stopBot();
+        bot.getWorld().removeViewAll(bot);
+
+        System.out.println(bot.getUsername() + " ✖ " + Message.fromString(event.getReason()).getFullText());
+        bot.stopBot();
         if (event.getCause() != null) {
             event.getCause().printStackTrace();
         }

@@ -16,7 +16,6 @@ public class Test  {
 
     public static void main(String... arg) throws Throwable {
 
-        System.out.println(Test.class.getMethod("test1"));
     }
 
     public static void test2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

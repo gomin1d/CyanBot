@@ -1,17 +1,17 @@
 package me.xjcyan1de.cyanbot.listeners;
 
 import com.github.steveice10.packetlib.event.session.*;
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.listeners.event.EventSystem;
 
 /**
  * Базовые ивенты
  */
-public class PlayerListener implements SessionListener {
+public class BotListener implements SessionListener {
 
     private EventSystem eventSystem;
 
-    public PlayerListener(Player player, EventSystem eventSystem) {
+    public BotListener(Bot bot, EventSystem eventSystem) {
         this.eventSystem = eventSystem;
     }
 

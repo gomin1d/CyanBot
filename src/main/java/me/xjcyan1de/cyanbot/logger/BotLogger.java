@@ -1,16 +1,14 @@
 package me.xjcyan1de.cyanbot.logger;
 
-import me.xjcyan1de.cyanbot.Player;
-
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public class PlayerLogger extends Logger {
+public class BotLogger extends Logger {
 
 	private String pluginName;
 
-	public PlayerLogger(String name, Logger logger) {
+	public BotLogger(String name, Logger logger) {
 		super("CeanBot", null);
 		this.pluginName = "[" + name + "] ";
 		this.setParent(logger);

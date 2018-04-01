@@ -2,10 +2,10 @@ package me.xjcyan1de.cyanbot.gui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import me.xjcyan1de.cyanbot.Player;
-import me.xjcyan1de.cyanbot.PlayerManager;
+import me.xjcyan1de.cyanbot.Bot;
+import me.xjcyan1de.cyanbot.BotManager;
 import me.xjcyan1de.cyanbot.config.Config;
-import me.xjcyan1de.cyanbot.logger.PlayerLogger;
+import me.xjcyan1de.cyanbot.logger.BotLogger;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 
 import javax.swing.*;
@@ -41,10 +41,10 @@ public class MainFrame extends JFrame {
     private JTextField valueSpin;
     private JList botList;
     private Config config;
-    private PlayerManager manager;
+    private BotManager manager;
     private Logger logger;
 
-    public MainFrame(Config config, PlayerManager manager, Logger logger) {
+    public MainFrame(Config config, BotManager manager, Logger logger) {
         this.config = config;
         this.manager = manager;
         this.logger = logger;
@@ -69,7 +69,7 @@ public class MainFrame extends JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    private void scheduleUpdateStatus(MainFrame mainFrame, PlayerManager manager) {
+    private void scheduleUpdateStatus(MainFrame mainFrame, BotManager manager) {
         Schedule.timer(() -> {
             final DefaultListModel model = (DefaultListModel) botList.getModel();
 
@@ -82,7 +82,7 @@ public class MainFrame extends JFrame {
                     namesInList.add(name);
                 }
             }
-            manager.getPlayers().forEach(player -> {
+            manager.getBots().forEach(player -> {
                 final String name = player.getUsername();
                 if (!namesInList.contains(name)) {
                     model.addElement(name);
@@ -129,37 +129,37 @@ public class MainFrame extends JFrame {
         join.addActionListener(e -> this.onJoin());
 
         getKey.addActionListener(e -> {
-            final Player player = manager.getPlayer(name.getText());
-            if (player != null) {
-                final String accessKey = player.generateAccessKey();
+            final Bot bot = manager.getBot(name.getText());
+            if (bot != null) {
+                final String accessKey = bot.generateAccessKey();
                 if (accessKey != null) {
-                    Hover.hoverText("Введите этот код в чат", player.getUsername() + ", " + accessKey);
+                    Hover.hoverText("Введите этот код в чат", bot.getUsername() + ", " + accessKey);
                 }
             }
         });
 
 
         leave.addActionListener(e -> {
-            final Player player = manager.getPlayer(name.getText());
-            if (player != null) {
-                manager.disconnectPlayer(player);
+            final Bot bot = manager.getBot(name.getText());
+            if (bot != null) {
+                manager.disconnectBot(bot);
                 final DefaultListModel model = (DefaultListModel) botList.getModel();
-                model.removeElement(player.getUsername());
+                model.removeElement(bot.getUsername());
                 botList.setModel(model);
             }
         });
 
         sendMessage.addActionListener(e -> {
-            final Player player = manager.getPlayer(name.getText());
-            if (player != null) {
-                player.sendMessage(messageText.getText());
+            final Bot bot = manager.getBot(name.getText());
+            if (bot != null) {
+                bot.sendMessage(messageText.getText());
             }
         });
 
         autoJoin.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                final Player player = manager.getPlayer(name.getText());
-                if (player == null) {
+                final Bot bot = manager.getBot(name.getText());
+                if (bot == null) {
                     this.onJoin();
                 }
             }
@@ -172,34 +172,34 @@ public class MainFrame extends JFrame {
         commandList.addListSelectionListener(e -> {
             final int index = commandList.getSelectedIndex();
             if (index != -1) {
-                Player[] players = getSelectedPlayers();
-                CommandListHandler.createPanel(commandPanel, index, players);
+                Bot[] bots = getSelectedBots();
+                CommandListHandler.createPanel(commandPanel, index, bots);
             }
         });
     }
 
     @SuppressWarnings("unchecked")
-    public Player[] getSelectedPlayers() {
-        return (Player[]) botList.getSelectedValuesList().stream()
-                .map(name1 -> manager.getPlayer(String.valueOf(name1)))
-                .filter(Objects::nonNull).toArray(Player[]::new);
+    public Bot[] getSelectedBots() {
+        return (Bot[]) botList.getSelectedValuesList().stream()
+                .map(name1 -> manager.getBot(String.valueOf(name1)))
+                .filter(Objects::nonNull).toArray(Bot[]::new);
     }
 
     @SuppressWarnings("unchecked")
     private void onJoin() {
         String ipText = ip.getText();
         final String[] ipPort = ipText.split(":");
-        final Player player = new Player(manager, this,
-                new PlayerLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
-        manager.connectPlayer(player);
+        final Bot bot = new Bot(manager, this,
+                new BotLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
+        manager.connectBot(bot, ipText);
 
         final DefaultListModel model = (DefaultListModel) botList.getModel();
-        model.addElement(player.getUsername());
+        model.addElement(bot.getUsername());
         botList.setModel(model);
 
         Schedule.later(() -> {
             for (String cmd : joinCommands.getText().split("\n")) {
-                player.sendMessage(cmd);
+                bot.sendMessage(cmd);
             }
         }, 1000);
     }

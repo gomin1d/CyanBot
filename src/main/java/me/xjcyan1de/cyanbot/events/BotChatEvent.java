@@ -1,19 +1,19 @@
 package me.xjcyan1de.cyanbot.events;
 
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.listeners.event.BaseCancellable;
 
-public class PlayerChatEvent extends BaseCancellable {
-    private Player player;
+public class BotChatEvent extends BaseCancellable {
+    private Bot bot;
     private String message;
 
-    public PlayerChatEvent(Player player, String message) {
-        this.player = player;
+    public BotChatEvent(Bot bot, String message) {
+        this.bot = bot;
         this.message = message;
     }
 
-    public Player getPlayer() {
-        return player;
+    public Bot getBot() {
+        return bot;
     }
 
     public String getMessage() {

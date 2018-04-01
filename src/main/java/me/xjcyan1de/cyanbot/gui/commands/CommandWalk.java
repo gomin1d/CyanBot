@@ -2,8 +2,8 @@ package me.xjcyan1de.cyanbot.gui.commands;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.Main;
-import me.xjcyan1de.cyanbot.Player;
 import me.xjcyan1de.cyanbot.gui.joystick.PointChangeEvent;
 import me.xjcyan1de.cyanbot.gui.joystick.SimpleJoystick;
 import me.xjcyan1de.cyanbot.utils.Schedule;
@@ -18,18 +18,18 @@ public class CommandWalk extends Command {
     private SimpleJoystick joystick;
     private double x;
     private double z;
-    private HashMap<Player, TimerTask> walkTaskMap = new HashMap<>();
+    private HashMap<Bot, TimerTask> walkTaskMap = new HashMap<>();
 
     public CommandWalk() {
         super("Идти");
     }
 
     @Override
-    public void execute(JPanel commandPanel, Player... players) {
+    public void execute(JPanel commandPanel, Bot... bots) {
         joystick = new SimpleJoystick(150);
         joystick.setPreferredSize(new Dimension(100, 100));
         joystick.addChangeListener(e -> {
-            Player[] selectedPlayers = Main.getMainFrame().getSelectedPlayers();
+            Bot[] selectedBots = Main.getMainFrame().getSelectedBots();
             final PointChangeEvent event = (PointChangeEvent) e;
             final Point p = event.p;
             double tempX = -p.getX() / 800;
@@ -41,22 +41,22 @@ public class CommandWalk extends Command {
 
 
             if ((-0.0001 < x && x < 0.0001) && (-0.0001 < z && z < 0.0001)) {
-                for (Player player : selectedPlayers) {
-                    TimerTask walkTask = walkTaskMap.get(player);
+                for (Bot bot : selectedBots) {
+                    TimerTask walkTask = walkTaskMap.get(bot);
                     if (walkTask != null) {
                         walkTask.cancel();
-                        walkTaskMap.remove(player);
+                        walkTaskMap.remove(bot);
                     }
                 }
             } else {
-                for (Player player : selectedPlayers) {
-                    TimerTask walkTask = walkTaskMap.get(player);
+                for (Bot bot : selectedBots) {
+                    TimerTask walkTask = walkTaskMap.get(bot);
                     if (walkTask == null) {
                         walkTask = Schedule.timer(() -> {
-                            player.getLoc().add(x, 0, z);
+                            bot.getLoc().add(x, 0, z);
                         }, 50, 50);
                     }
-                    walkTaskMap.put(player, walkTask);
+                    walkTaskMap.put(bot, walkTask);
                 }
             }
 

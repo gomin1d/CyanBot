@@ -1,6 +1,6 @@
 package me.xjcyan1de.cyanbot.handlers;
 
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.world.Location;
 import me.xjcyan1de.cyanbot.world.Vector;
 
@@ -10,12 +10,12 @@ import me.xjcyan1de.cyanbot.world.Vector;
 public class ValidateHandler implements Handler {
     private Location loc;
     private Vector speed;
-    private Player player;
+    private Bot bot;
 
-    public ValidateHandler(Player player) {
-        this.player = player;
-        this.loc = player.getLoc();
-        this.speed = player.getSpeed();
+    public ValidateHandler(Bot bot) {
+        this.bot = bot;
+        this.loc = bot.getLoc();
+        this.speed = bot.getSpeed();
     }
 
 

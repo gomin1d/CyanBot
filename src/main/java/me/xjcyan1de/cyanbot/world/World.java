@@ -1,6 +1,8 @@
 package me.xjcyan1de.cyanbot.world;
 
+import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import me.xjcyan1de.cyanbot.Bot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,23 +13,14 @@ public class World {
     private Map<ChunkCoord, Chunk> chunkMap = new HashMap<>();
 
     public World() {
-
     }
 
-    public void mergeChunks(Chunk... chunks) {
-        for (Chunk chunk : chunks) {
-            final ChunkCoord chunkCoord = toKey(chunk);
-            final Chunk chunkIn = chunkMap.get(chunkCoord);
-            if (chunkIn != null) {
-                for (int i = 0; i < 16; i++) {
-                    if (chunk.getSections()[i] != null) {
-                        chunkIn.getSections()[i] = chunk.getSections()[i];
-                    }
-                }
-            } else {
-                chunkMap.put(chunkCoord, chunk);
-            }
-        }
+    public void mergeChunk(Bot bot, Column column) {
+        final ChunkCoord chunkCoord = toKey(column.getX(), column.getZ());
+        final Chunk chunk = chunkMap.computeIfAbsent(chunkCoord, key->new Chunk(this, key.x, key.z));
+        chunk.addView(bot);
+
+        chunk.merge(column);
     }
 
     private ChunkCoord toKey(Chunk chunk) {
@@ -44,10 +37,6 @@ public class World {
 
     public Chunk getChunkAt(int x, int z) {
         return chunkMap.get(toKey(x, z));
-    }
-
-    public void clearChunks() {
-        chunkMap.clear();
     }
 
     public void setBlockState(int x, int y, int z, BlockState state) {
@@ -80,6 +69,28 @@ public class World {
 
     public boolean hasChunkAt(Location loc) {
         return chunkMap.containsKey(toKey(loc.getBlockX() >> 4, loc.getBlockZ() >> 4));
+    }
+
+    public void removeView(Bot bot, Chunk chunk) {
+        chunk.removeView(bot);
+        if (chunk.getView().isEmpty()) {
+            this.removeChunk(chunk);
+        }
+    }
+
+    public void removeViewAll(Bot bot) {
+        chunkMap.values().removeIf(chunk -> {
+           chunk.removeView(bot);
+           return chunk.getView().isEmpty();
+        });
+    }
+
+    public void checkRemoveChunks() {
+        chunkMap.values().removeIf(chunk -> chunk.getView().isEmpty());
+    }
+
+    public Map<ChunkCoord, Chunk> getChunkMap() {
+        return chunkMap;
     }
 
     private static class ChunkCoord {

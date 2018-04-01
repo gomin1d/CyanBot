@@ -3,7 +3,7 @@ package me.xjcyan1de.cyanbot.tasks;
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.world.Location;
 
 import java.util.ArrayList;
@@ -12,16 +12,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MoveTask {
-    private Player player;
+    private Bot bot;
 
-    public MoveTask(Player player) {
-        this.player = player;
+    public MoveTask(Bot bot) {
+        this.bot = bot;
     }
 
     public void runPathing(final Location start, final Location end, final int range) {
         try {
             //create our pathfinder
-            AStar path = new AStar(player.getWorld(), start, end, range);
+            AStar path = new AStar(bot.getWorld(), start, end, range);
             //get the list of nodes to walk to as a Tile object
             ArrayList<Tile> route = path.iterate();
             //get the result of the path trace
@@ -125,9 +125,9 @@ public class MoveTask {
     public boolean calcMovement(Location l) {
         boolean canGo = false;
         //checks that the place we are going to is safe
-        if (!player.getWorld().getBlockAt(l).getRelative(0, 1, 0).getBoundBox().isSolid()) {//start by checking if we can go there
+        if (!bot.getWorld().getBlockAt(l).getRelative(0, 1, 0).getBoundBox().isSolid()) {//start by checking if we can go there
             //now check if the head is safe
-            if (!player.getWorld().getBlockAt(l).getRelative(0, 2, 0).getBoundBox().isSolid()) {
+            if (!bot.getWorld().getBlockAt(l).getRelative(0, 2, 0).getBoundBox().isSolid()) {
                 //yay it seems clear, so now we can go there
             	/*int steps = 3; //the amount of steps to take
             	double deltax = (l.getX() - c.location.getX())/steps;
@@ -139,9 +139,9 @@ public class MoveTask {
             		c.location.setZ(c.location.getZ() + deltaz);
             		tick();
             	}*/
-                player.getLoc().setX(l.getX());
-                player.getLoc().setY(l.getY() + 1);// HAHAHAHAHAH WOW
-                player.getLoc().setZ(l.getZ());
+                bot.getLoc().setX(l.getX());
+                bot.getLoc().setY(l.getY() + 1);// HAHAHAHAHAH WOW
+                bot.getLoc().setZ(l.getZ());
                 //c.chat.sendMessage("Location: " + l.getBlockX() + ", " + (l.getBlockY()+1) + "," + l.getBlockZ() + " " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
                 canGo = true;
             }
@@ -151,7 +151,7 @@ public class MoveTask {
 
 
     public void goToLocation(int x, int y, int z) {
-        Location l = player.getLoc().clone().add(0, -1, 0);
+        Location l = bot.getLoc().clone().add(0, -1, 0);
         Location loc = new Location(x, y - 1, z);
         runPathing(l, loc, 100);
     }

@@ -1,17 +1,17 @@
 package me.xjcyan1de.cyanbot.tasks;
 
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 
 public abstract class Task {
 
-    private Player player;
+    private Bot bot;
 
-    public Task(Player player) {
-        this.player = player;
+    public Task(Bot bot) {
+        this.bot = bot;
     }
 
-    public Player getPlayer() {
-        return player;
+    public Bot getBot() {
+        return bot;
     }
 
     public abstract void run(String[] args);

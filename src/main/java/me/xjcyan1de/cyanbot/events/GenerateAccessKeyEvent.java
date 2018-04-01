@@ -1,23 +1,21 @@
 package me.xjcyan1de.cyanbot.events;
 
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.listeners.event.BaseCancellable;
-import me.xjcyan1de.cyanbot.listeners.event.EventHandler;
-import me.xjcyan1de.cyanbot.listeners.event.Listener;
 
 public class GenerateAccessKeyEvent extends BaseCancellable {
-    private Player player;
+    private Bot bot;
     private String name;
     private String key;
 
-    public GenerateAccessKeyEvent(Player player, String name, String key) {
-        this.player = player;
+    public GenerateAccessKeyEvent(Bot bot, String name, String key) {
+        this.bot = bot;
         this.name = name;
         this.key = key;
     }
 
-    public Player getPlayer() {
-        return player;
+    public Bot getBot() {
+        return bot;
     }
 
     public String getKey() {

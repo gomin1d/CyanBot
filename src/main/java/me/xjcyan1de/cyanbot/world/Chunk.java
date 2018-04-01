@@ -2,8 +2,9 @@ package me.xjcyan1de.cyanbot.world;
 
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import me.xjcyan1de.cyanbot.Bot;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Chunk {
 
@@ -13,34 +14,13 @@ public class Chunk {
     private int z;
     private com.github.steveice10.mc.protocol.data.game.chunk.Chunk[] sections;
 
-    public Chunk(World world, Column column) {
-        this.world = world;
-        this.x = column.getX();
-        this.z = column.getZ();
-        this.sections = column.getChunks();
-        if (x == 0 && z == 0) {
-            int sectionY = 0;
-            for (com.github.steveice10.mc.protocol.data.game.chunk.Chunk section : sections) {
-                if (section != null) {
-                    for (int x = 0; x < 16; x++) {
-                        for (int z = 0; z < 16; z++) {
-                            for (int y = 0; y < 16; y++) {
-                                BlockState blockState = section.getBlocks().get(x, y, z);
+    private Set<Bot> bots = new HashSet<>(); //view
 
-                                Block block = new Block(this.world, blockState.getId(), blockState.getData(), (this.x << 4) + x, (sectionY << 4) + y, (this.z << 4) + z);
-//								if (block.getId() != 0){
-//									System.out.println("ID="+block.getId()+" ["+x+" "+y+" "+z+"] > "+sectionY);
-//									System.out.println("   ["+block.getX()+" "+block.getY()+" "+block.getZ()+"]");
-//
-//									//[15 16 15]
-//								}
-                            }
-                        }
-                    }
-                }
-                sectionY++;
-            }
-        }
+    public Chunk(World world, int x, int z) {
+        this.world = world;
+        this.x = x;
+        this.z = z;
+        this.sections = new com.github.steveice10.mc.protocol.data.game.chunk.Chunk[16];
     }
 
     public Block getBlockAt(int section, int sectionX, int sectionY, int sectionZ) {
@@ -50,6 +30,18 @@ public class Chunk {
         } else {
             return null;
         }
+    }
+
+    public void addView(Bot bot) {
+        this.bots.add(bot);
+    }
+    
+    public void removeView(Bot bot) {
+        this.bots.remove(bot);
+    }
+
+    public Set<Bot> getView() {
+        return bots;
     }
 
     public int getX() {
@@ -95,5 +87,13 @@ public class Chunk {
                 ", x=" + x +
                 ", z=" + z +
                 '}';
+    }
+
+    public void merge(Column column) {
+        for (int i = 0; i < 16; i++) {
+            if (column.getChunks()[i] != null) {
+                sections[i] = column.getChunks()[i];
+            }
+        }
     }
 }

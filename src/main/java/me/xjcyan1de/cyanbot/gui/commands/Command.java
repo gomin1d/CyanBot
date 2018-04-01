@@ -1,6 +1,6 @@
 package me.xjcyan1de.cyanbot.gui.commands;
 
-import me.xjcyan1de.cyanbot.Player;
+import me.xjcyan1de.cyanbot.Bot;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -19,7 +19,7 @@ public abstract class Command {
         return title;
     }
 
-    public abstract void execute(JPanel jPanel, Player... players);
+    public abstract void execute(JPanel jPanel, Bot... bots);
 
     public void register(DefaultListModel<String> listModel) {
         listModel.addElement(getTitle());

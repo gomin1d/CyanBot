@@ -12,7 +12,7 @@ import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import com.sun.istack.internal.Nullable;
 import me.xjcyan1de.cyanbot.events.GenerateAccessKeyEvent;
-import me.xjcyan1de.cyanbot.events.PlayerChatEvent;
+import me.xjcyan1de.cyanbot.events.BotChatEvent;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.handlers.*;
 import me.xjcyan1de.cyanbot.listeners.*;
@@ -25,7 +25,7 @@ import java.net.Proxy;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class Player {
+public class Bot {
 
     private int entityId;
 
@@ -50,9 +50,9 @@ public class Player {
     private Logger logger;
     private EventSystem eventSystem;
 
-    String accessKey;
+    private String accessKey;
 
-    public Player(PlayerManager manager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
+    public Bot(BotManager manager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
         this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
@@ -64,16 +64,20 @@ public class Player {
         this.registerListeners(mainFrame, manager);
     }
 
+    void setWorld(World world) {
+        this.world = world;
+    }
+
     private void registerEvents() {
         this.eventSystem.registerLisneter(new ChatEvents(this));
     }
 
-    private void registerListeners(MainFrame mainFrame, PlayerManager manager) {
-        this.listeners.add(new PacketListener(this));
+    private void registerListeners(MainFrame mainFrame, BotManager manager) {
+        this.listeners.add(new PacketWorldListener(this));
         this.listeners.add(new ChatListener(this));
         this.listeners.add(new ChatToGuiListener(mainFrame));
         this.listeners.add(new CloseConnectionListener(this, manager, logger));
-        this.listeners.add(new PlayerListener(this, eventSystem)); // для системы иветов
+        this.listeners.add(new BotListener(this, eventSystem)); // для системы иветов
     }
 
     private void registerHandlers() {
@@ -118,7 +122,7 @@ public class Player {
     }
 
     public void sendMessage(String message) {
-        final PlayerChatEvent event = eventSystem.callEvent(new PlayerChatEvent(this, message));
+        final BotChatEvent event = eventSystem.callEvent(new BotChatEvent(this, message));
         if (!event.isCancelled()) {
             sendPacket(new ClientChatPacket(event.getMessage()));
         }
@@ -203,7 +207,6 @@ public class Player {
         logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
         this.client.getSession().connect();
 
-        this.world = new World();
         this.boundBox = new BoundBox(0.6, 1.8);
 
         listeners.forEach(sessionAdapter -> {
@@ -244,8 +247,8 @@ public class Player {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return Objects.equals(username, player.username);
+        Bot bot = (Bot) o;
+        return Objects.equals(username, bot.username);
     }
 
     @Override
@@ -256,7 +259,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
+        return "Bot{" +
                 "entityId=" + entityId +
                 ", username='" + username + '\'' +
                 '}';
