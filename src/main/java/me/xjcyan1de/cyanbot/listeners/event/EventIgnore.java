@@ -7,7 +7,7 @@ public enum EventIgnore {
     /**
      * Игнорировать события, если отменено
      */
-    IGNORE_CANCELLED{
+    CANCELLED {
         @Override
         public boolean hasIgnore(Cancellable cancellable) {
             return cancellable.isCancelled();
@@ -16,7 +16,7 @@ public enum EventIgnore {
     /**
      * Игрорировать событие, если не отменено
      */
-    IGNORE_NOT_CANCELLED {
+    NOT_CANCELLED {
         @Override
         public boolean hasIgnore(Cancellable cancellable) {
             return !cancellable.isCancelled();
@@ -25,7 +25,7 @@ public enum EventIgnore {
     /**
      * Не игнорировать события
      */
-    NOT_IGNORE {
+    NOTHING {
         @Override
         public boolean hasIgnore(Cancellable cancellable) {
             return false;

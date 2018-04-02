@@ -2,14 +2,13 @@ package me.xjcyan1de.cyanbot;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.event.session.SessionListener;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import me.xjcyan1de.cyanbot.commands.CommandTest;
+import me.xjcyan1de.cyanbot.commands.CommandYou;
+import me.xjcyan1de.cyanbot.commands.command.CommandSystem;
 import me.xjcyan1de.cyanbot.events.GenerateAccessKeyEvent;
 import me.xjcyan1de.cyanbot.events.BotChatEvent;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
@@ -19,12 +18,16 @@ import me.xjcyan1de.cyanbot.listeners.event.EventSystem;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
 import me.xjcyan1de.cyanbot.world.Vector;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.net.Proxy;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * Бот ебаный в рот
+ */
 public class Bot {
 
     private int entityId;
@@ -42,16 +45,18 @@ public class Bot {
     private Vector speed = new Vector();
 
     private List<Handler> handlers = new ArrayList<>();
-    private List<SessionListener> listeners = new ArrayList<>();
     private EventSystem eventSystem;
+    private CommandSystem commandSystem;
     private TimerTask timerTask;
 
     private boolean debug = false;
     private BotManager botManager;
     private Logger logger;
 
-    private String accessKey;
     private List<String> joinCommands;
+
+    private String accessKey;
+    private List<String> accessPlayers = new ArrayList<>(1);
 
     public Bot(BotManager botManager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
         this.botManager = botManager;
@@ -60,30 +65,31 @@ public class Bot {
         this.username = username;
         this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
         this.eventSystem = new EventSystem(logger);
+        this.commandSystem = new CommandSystem(this, logger);
 
-        this.registerEvents();
-        this.registerHandlers();
-        this.registerListeners(mainFrame, botManager);
+        this.registerEvents(); // регистрация ивентов
+        this.registerHandlers(); // регистрация handler'ов
+        this.registerListeners(mainFrame); // регистрация ивентов (ванильная)
+        this.registerCommands(); //регистрация команд
     }
 
-    public BotManager getBotManager() {
-        return botManager;
-    }
-
-    public void setServer(Server server) {
-        this.server = server;
+    private void registerCommands() {
+        this.commandSystem.registerCommand(new CommandYou());
+        this.commandSystem.registerCommand(new CommandTest());
     }
 
     private void registerEvents() {
         this.eventSystem.registerLisneter(new InitEvents(this));
-        this.listeners.add(new ChatListener(this));
+        this.eventSystem.registerLisneter(new AccessEvents(this));
+        this.eventSystem.registerLisneter(new CommandEvents(this));
+        this.eventSystem.registerLisneter(new CommandSystemEvents(this, commandSystem));
     }
 
-    private void registerListeners(MainFrame mainFrame, BotManager manager) {
-        this.listeners.add(new PacketWorldListener(this));
-        this.listeners.add(new ChatToGuiListener(mainFrame));
-        this.listeners.add(new CloseConnectionListener(this, manager, logger));
-        this.listeners.add(new BotListener(this, eventSystem)); // для системы иветов
+    private void registerListeners(MainFrame mainFrame) {
+        this.client.getSession().addListener(new PacketWorldListener(this));
+        this.client.getSession().addListener(new ChatToGuiListener(mainFrame));
+        this.client.getSession().addListener(new CloseConnectionListener(this, botManager, logger));
+        this.client.getSession().addListener(new BotListener(this, eventSystem)); // для системы иветов
     }
 
     private void registerHandlers() {
@@ -107,10 +113,6 @@ public class Bot {
 
         this.boundBox = new BoundBox(0.6, 1.8);
 
-        listeners.forEach(sessionAdapter -> {
-            this.getClient().getSession().addListener(sessionAdapter);
-        });
-
         this.client.getSession().connect();
 
         this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
@@ -120,14 +122,24 @@ public class Bot {
         if (timerTask != null) {
             timerTask.cancel();
         }
-        // this.getWorld().clearChunks(); // зачем?
     }
 
+
+    public BotManager getBotManager() {
+        return botManager;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+
     public void sendPacket(Packet packet) {
-       /* if (!(packet instanceof ClientPlayerPositionRotationPacket || packet instanceof ClientChatPacket)) {
-            System.out.println(username + " > " + packet.toString());
-        }*/
         getClient().getSession().send(packet);
+    }
+
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
     }
 
     public void sendMessage(String message) {
@@ -137,8 +149,8 @@ public class Bot {
         }
     }
 
-    public void onJoin(ServerJoinGamePacket packet) {
-
+    public List<String> getAccessPlayers() {
+        return accessPlayers;
     }
 
     public void onUpdate() {
@@ -193,13 +205,16 @@ public class Bot {
 
     @Nullable
     public String generateAccessKey() {
+        this.accessKey = null;
+
         Random random = new Random();
-        this.accessKey = String.valueOf(1000 + random.nextInt(8999));
-        if (!eventSystem.callEvent(new GenerateAccessKeyEvent(this, "XjCyan1de", accessKey)).isCancelled()) {
-            logger.info("Сгенерирован новый ключ: " + accessKey);
-            eventSystem.callEvent(accessKey);
-            this.sendMessage("/tell XjCyan1de Ключ: " + accessKey);
-            return accessKey;
+        String newKey = String.valueOf(1000 + random.nextInt(8999));
+        final GenerateAccessKeyEvent event = eventSystem.callEvent(
+                new GenerateAccessKeyEvent(this,  newKey));
+        if (!event.isCancelled()) {
+            this.accessKey = newKey = event.getKey();
+            logger.info("Сгенерирован новый ключ: " + newKey);
+            return newKey;
         }
 
         return null;
@@ -264,5 +279,10 @@ public class Bot {
 
     public Client getClient() {
         return client;
+    }
+
+    public boolean hasAccess(String player) {
+        return accessPlayers.stream()
+                .anyMatch(s -> s.equalsIgnoreCase(player));
     }
 }

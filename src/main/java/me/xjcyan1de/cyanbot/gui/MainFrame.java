@@ -154,7 +154,7 @@ public class MainFrame extends JFrame {
             if (bot != null) {
                 final String accessKey = bot.generateAccessKey();
                 if (accessKey != null) {
-                    Hover.hoverText("Введите этот код в чат", bot.getUsername() + ", " + accessKey);
+                    Hover.hoverText("Введите этот код в чат", accessKey);
                 }
             }
         });

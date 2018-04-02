@@ -22,5 +22,5 @@ public @interface EventHandler {
      * Если event реализрует Cancellable, то в случае отмены event'a, этот handler не будет вызван
      * @return тип игнорирования event'a
      */
-    EventIgnore ignore() default EventIgnore.NOT_IGNORE;
+    EventIgnore ignore() default EventIgnore.NOTHING;
 }

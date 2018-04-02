@@ -37,7 +37,6 @@ public class PacketWorldListener extends SessionAdapter {
             if (packetHandle instanceof ServerJoinGamePacket) {
                 ServerJoinGamePacket packet = (ServerJoinGamePacket) packetHandle;
                 bot.setEntityId(packet.getEntityId());
-                bot.onJoin(packet);
             } else if (packetHandle instanceof ServerPlayerPositionRotationPacket) {
                 ServerPlayerPositionRotationPacket packet = (ServerPlayerPositionRotationPacket) packetHandle;
                 Location location = new Location(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
@@ -78,7 +77,7 @@ public class PacketWorldListener extends SessionAdapter {
                     }
                 }
             } else {
-                if (packetHandle instanceof ServerUpdateTimePacket ||
+                /*if (packetHandle instanceof ServerUpdateTimePacket ||
                         packetHandle instanceof ServerKeepAlivePacket ||
                         packetHandle instanceof ServerPlaySoundPacket ||
                         packetHandle instanceof ServerEntityEffectPacket
@@ -86,7 +85,7 @@ public class PacketWorldListener extends SessionAdapter {
                         ) {
                 } else {
                     //System.out.println(bot.getUsername()+" <- "+packetHandle);
-                }
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();

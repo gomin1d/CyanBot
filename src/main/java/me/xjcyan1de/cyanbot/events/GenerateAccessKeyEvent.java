@@ -5,12 +5,10 @@ import me.xjcyan1de.cyanbot.listeners.event.BaseCancellable;
 
 public class GenerateAccessKeyEvent extends BaseCancellable {
     private Bot bot;
-    private String name;
     private String key;
 
-    public GenerateAccessKeyEvent(Bot bot, String name, String key) {
+    public GenerateAccessKeyEvent(Bot bot, String key) {
         this.bot = bot;
-        this.name = name;
         this.key = key;
     }
 
@@ -24,9 +22,5 @@ public class GenerateAccessKeyEvent extends BaseCancellable {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public String getName() {
-        return name;
     }
 }

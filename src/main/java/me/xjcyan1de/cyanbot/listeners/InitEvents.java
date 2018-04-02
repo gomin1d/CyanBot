@@ -5,7 +5,7 @@ import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.Server;
 import me.xjcyan1de.cyanbot.config.Config;
-import me.xjcyan1de.cyanbot.events.ServerPlayerChatEvent;
+import me.xjcyan1de.cyanbot.events.PlayerChatEvent;
 import me.xjcyan1de.cyanbot.listeners.event.*;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.utils.StringUtilsMy;
@@ -79,13 +79,16 @@ public class InitEvents implements Listener {
         final String fullText = packet.getMessage().getFullText();
         final Server.ChatMessageData messageData = bot.getServer().parseChatMessage(fullText);
         if (messageData != null) {
-            bot.getEventSystem().callEvent(new ServerPlayerChatEvent(bot, messageData.getSender(), messageData.getMessage()));
+            //сообщения бота не обрабатываем
+            if (!messageData.getSender().equalsIgnoreCase(bot.getUsername())) {
+                bot.getEventSystem().callEvent(new PlayerChatEvent(bot, messageData.getSender(), messageData.getMessage()));
+            }
         }
     }
 
 
     @EventHandler
-    public void onChat(ServerPlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
         System.out.println("игрок " + event.getSender() + " сообщение: " + event.getMessage());
     }
 
