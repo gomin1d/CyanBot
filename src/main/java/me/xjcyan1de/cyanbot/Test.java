@@ -16,6 +16,24 @@ public class Test  {
 
     }
 
+    public static void worldInfo() {
+                /*Schedule.timer(()->{
+            manager.getWorldMap().values()
+                    .forEach(world -> {
+                        System.out.println("world: ");
+                        Map<Integer, Integer> map = new HashMap<>();
+                        world.getChunkMap().values()
+                                .forEach(chunk -> {
+                                    final Integer integer = map.computeIfAbsent(chunk.getView().size(), ket -> 0);
+                                    map.put(chunk.getView().size(), integer + 1);
+                                });
+                        map.forEach((count, size)->{
+                            System.out.println("  " + count + ": " + size);
+                        });
+                    });
+        }, 1000, 1000);*/
+    }
+
     public static void joinBots() {
         final BotManager manager = Main.getManager();
         final MainFrame mainFrame = Main.getMainFrame();

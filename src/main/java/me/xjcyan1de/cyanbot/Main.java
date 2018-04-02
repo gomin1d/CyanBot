@@ -12,7 +12,7 @@ public class Main {
     private static MainFrame mainFrame;
     private static BotManager manager;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Throwable {
         setUTF8();
 
         final Logger logger = LoggerInstaller.create("CyanBot", "CyanBot.log");
@@ -21,27 +21,16 @@ public class Main {
 
         final Config config = new Config("config.yml");
 
-        /*Schedule.timer(()->{
-            manager.getWorldMap().values()
-                    .forEach(world -> {
-                        System.out.println("world: ");
-                        Map<Integer, Integer> map = new HashMap<>();
-                        world.getChunkMap().values()
-                                .forEach(chunk -> {
-                                    final Integer integer = map.computeIfAbsent(chunk.getView().size(), ket -> 0);
-                                    map.put(chunk.getView().size(), integer + 1);
-                                });
-                        map.forEach((count, size)->{
-                            System.out.println("  " + count + ": " + size);
-                        });
-                    });
-        }, 1000, 1000);*/
-
         mainFrame = new MainFrame(config, manager, logger);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null); // по центу экрана
         mainFrame.setVisible(true);
 
+        try {
+            Test.main();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     private static void setUTF8() throws NoSuchFieldException, IllegalAccessException {
