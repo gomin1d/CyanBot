@@ -6,7 +6,7 @@ import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.Main;
 import me.xjcyan1de.cyanbot.gui.joystick.PointChangeEvent;
 import me.xjcyan1de.cyanbot.gui.joystick.SimpleJoystick;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 
 import javax.swing.*;
 import java.awt.*;

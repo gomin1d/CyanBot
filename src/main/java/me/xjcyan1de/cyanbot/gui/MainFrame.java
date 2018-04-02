@@ -5,12 +5,10 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.BotManager;
 import me.xjcyan1de.cyanbot.config.Config;
-import me.xjcyan1de.cyanbot.logger.BotLogger;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -40,14 +38,14 @@ public class MainFrame extends JFrame {
     private JTextField chatText;
     private JTextField deplayRelogin;
     private Config config;
-    private BotManager manager;
+    private BotManager botManager;
     private Logger logger;
 
     private TimerTask taskRelogin;
 
-    public MainFrame(Config config, BotManager manager, Logger logger) {
+    public MainFrame(Config config, BotManager botManager, Logger logger) {
         this.config = config;
-        this.manager = manager;
+        this.botManager = botManager;
         this.logger = logger;
 
         this.setTitle("CyanBot");
@@ -62,7 +60,7 @@ public class MainFrame extends JFrame {
         logger.addHandler(new FormLoggerHandler(logs));
 
         this.registerListeners();
-        this.scheduleUpdateStatus(this, manager);
+        this.scheduleUpdateStatus(this, botManager);
 
         this.updateRelogin();
 
@@ -72,7 +70,7 @@ public class MainFrame extends JFrame {
     public void updateRelogin() {
         if (autoJoin.isSelected()) {
             taskRelogin = Schedule.timer(() -> {
-                final Bot bot = manager.getBot(name.getText());
+                final Bot bot = botManager.getBot(name.getText());
                 if (bot == null) {
                     this.onJoin();
                 }
@@ -150,7 +148,7 @@ public class MainFrame extends JFrame {
         join.addActionListener(e -> this.onJoin());
 
         getKey.addActionListener(e -> {
-            final Bot bot = manager.getBot(name.getText());
+            final Bot bot = botManager.getBot(name.getText());
             if (bot != null) {
                 final String accessKey = bot.generateAccessKey();
                 if (accessKey != null) {
@@ -161,17 +159,17 @@ public class MainFrame extends JFrame {
 
 
         leave.addActionListener(e -> {
-            final Bot bot = manager.getBot(name.getText());
+            final Bot bot = botManager.getBot(name.getText());
             if (bot != null) {
-                manager.disconnectBot(bot);
-                final DefaultListModel model = (DefaultListModel) botList.getModel();
+                botManager.disconnectBot(bot);
+                /*final DefaultListModel model = (DefaultListModel) botList.getModel();
                 model.removeElement(bot.getUsername());
-                botList.setModel(model);
+                botList.setModel(model);*/
             }
         });
 
         sendMessage.addActionListener(e -> {
-            final Bot bot = manager.getBot(name.getText());
+            final Bot bot = botManager.getBot(name.getText());
             if (bot != null) {
                 bot.sendMessage(messageText.getText());
             }
@@ -200,19 +198,16 @@ public class MainFrame extends JFrame {
     @SuppressWarnings("unchecked")
     public Bot[] getSelectedBots() {
         return (Bot[]) botList.getSelectedValuesList().stream()
-                .map(name1 -> manager.getBot(String.valueOf(name1)))
+                .map(name1 -> botManager.getBot(String.valueOf(name1)))
                 .filter(Objects::nonNull).toArray(Bot[]::new);
     }
 
     @SuppressWarnings("unchecked")
     private void onJoin() {
         String ipText = ip.getText();
-        final String[] ipPort = ipText.split(":");
-        final Bot bot = new Bot(manager, this,
-                new BotLogger(name.getText(), logger), name.getText(), ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565);
-
-        bot.setJoinCommands(Arrays.asList(joinCommands.getText().split("\n")));
-        manager.connectBot(bot, ipText);
+        botManager.connectBot(ipText, name.getText(),
+                Arrays.asList(joinCommands.getText().split("\n")),
+                this);
     }
 
     public JTextField getIp() {

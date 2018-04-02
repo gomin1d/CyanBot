@@ -3,10 +3,10 @@ package me.xjcyan1de.cyanbot;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.event.session.SessionListener;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import me.xjcyan1de.cyanbot.commands.CommandTest;
+import me.xjcyan1de.cyanbot.commands.CommandWhere;
 import me.xjcyan1de.cyanbot.commands.CommandYou;
 import me.xjcyan1de.cyanbot.commands.command.CommandSystem;
 import me.xjcyan1de.cyanbot.events.GenerateAccessKeyEvent;
@@ -15,10 +15,9 @@ import me.xjcyan1de.cyanbot.gui.MainFrame;
 import me.xjcyan1de.cyanbot.handlers.*;
 import me.xjcyan1de.cyanbot.listeners.*;
 import me.xjcyan1de.cyanbot.listeners.event.EventSystem;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
 import me.xjcyan1de.cyanbot.world.Vector;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.net.Proxy;
@@ -41,8 +40,8 @@ public class Bot {
     private boolean onGround = true;
 
     private Server server;
-    private Location loc = new Location(0, 0, 0);
-    private Vector speed = new Vector();
+    private final Location loc = new Location(0, 0, 0);
+    private final Vector speed = new Vector();
 
     private List<Handler> handlers = new ArrayList<>();
     private EventSystem eventSystem;
@@ -58,11 +57,12 @@ public class Bot {
     private String accessKey;
     private List<String> accessPlayers = new ArrayList<>(1);
 
-    public Bot(BotManager botManager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
+    public Bot(BotManager botManager, MainFrame mainFrame, Logger logger, String username, String host, int port, Server server) {
         this.botManager = botManager;
         this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
+        this.server = server;
         this.client = new Client(host, port, protocol, new TcpSessionFactory(Proxy.NO_PROXY));
         this.eventSystem = new EventSystem(logger);
         this.commandSystem = new CommandSystem(this, logger);
@@ -75,14 +75,16 @@ public class Bot {
 
     private void registerCommands() {
         this.commandSystem.registerCommand(new CommandYou());
+        this.commandSystem.registerCommand(new CommandWhere());
         this.commandSystem.registerCommand(new CommandTest());
     }
 
     private void registerEvents() {
         this.eventSystem.registerLisneter(new InitEvents(this));
         this.eventSystem.registerLisneter(new AccessEvents(this));
-        this.eventSystem.registerLisneter(new CommandEvents(this));
+        this.eventSystem.registerLisneter(new CommandEvents(this, logger));
         this.eventSystem.registerLisneter(new CommandSystemEvents(this, commandSystem));
+        this.eventSystem.registerLisneter(new PacketWorldEntityEvents(this));
     }
 
     private void registerListeners(MainFrame mainFrame) {
@@ -119,20 +121,13 @@ public class Bot {
     }
 
     public void stopBot() {
-        if (timerTask != null) {
-            timerTask.cancel();
-        }
+        Schedule.cancel(timerTask);
     }
 
 
     public BotManager getBotManager() {
         return botManager;
     }
-
-    public void setServer(Server server) {
-        this.server = server;
-    }
-
 
     public void sendPacket(Packet packet) {
         getClient().getSession().send(packet);
@@ -284,5 +279,9 @@ public class Bot {
     public boolean hasAccess(String player) {
         return accessPlayers.stream()
                 .anyMatch(s -> s.equalsIgnoreCase(player));
+    }
+
+    public void disconnect(String reason) {
+        client.getSession().disconnect(reason);
     }
 }

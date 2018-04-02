@@ -11,11 +11,10 @@ import me.xjcyan1de.cyanbot.events.CommandEvent;
 import me.xjcyan1de.cyanbot.events.PlayerChatEvent;
 import me.xjcyan1de.cyanbot.listeners.event.EventHandler;
 import me.xjcyan1de.cyanbot.listeners.event.Listener;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 
@@ -23,9 +22,11 @@ public class CommandEvents implements Listener {
     private static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
 
     private Bot bot;
+    private Logger logger;
 
-    public CommandEvents(Bot bot) {
+    public CommandEvents(Bot bot, Logger logger) {
         this.bot = bot;
+        this.logger = logger;
     }
 
     @EventHandler
@@ -130,7 +131,8 @@ public class CommandEvents implements Listener {
     @EventHandler
     public void on(PlayerChatEvent event) {
         final String message = event.getMessage();
-        if (StringUtils.startsWithIgnoreCase(message, bot.getUsername())) {
+        if (StringUtils.startsWithIgnoreCase(message, bot.getUsername())  //для "НИК," тоже сработает
+                || StringUtils.startsWithIgnoreCase(message, "боты")) {
             final String[] commandArgs = PATTERN_ON_SPACE.split(message);
             if (commandArgs.length == 1) {
                 bot.sendMessage(event.getSender() + ", шо ты хочешь?");
@@ -138,6 +140,7 @@ public class CommandEvents implements Listener {
                 String command = commandArgs[1];
                 String args[] = new String[commandArgs.length - 2];
                 System.arraycopy(commandArgs, 2, args, 0, commandArgs.length - 2);
+                logger.info("Игрок " + event.getSender() + "  написал команду: " + message);
                 bot.getEventSystem().callEvent(new CommandEvent(
                         bot, event.getSender(), command, args));
             }

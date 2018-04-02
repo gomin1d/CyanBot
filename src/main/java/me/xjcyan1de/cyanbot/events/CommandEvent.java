@@ -121,4 +121,11 @@ public class CommandEvent extends BaseCancellable {
                 ", args=" + Arrays.toString(args) +
                 '}';
     }
+
+    /**
+     * Если ли указанное количество аргументов
+     */
+    public boolean hasSize(int size) {
+        return args.length >= size;
+    }
 }

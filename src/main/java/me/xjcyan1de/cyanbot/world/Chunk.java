@@ -2,11 +2,13 @@ package me.xjcyan1de.cyanbot.world;
 
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import me.xjcyan1de.cyanbot.Bot;
 
 import java.util.*;
 
-public class Chunk {
+public class Chunk extends View {
 
     private World world;
 
@@ -14,7 +16,6 @@ public class Chunk {
     private int z;
     private com.github.steveice10.mc.protocol.data.game.chunk.Chunk[] sections;
 
-    private Set<Bot> bots = new HashSet<>(); //view
 
     public Chunk(World world, int x, int z) {
         this.world = world;
@@ -30,18 +31,6 @@ public class Chunk {
         } else {
             return null;
         }
-    }
-
-    public void addView(Bot bot) {
-        this.bots.add(bot);
-    }
-    
-    public void removeView(Bot bot) {
-        this.bots.remove(bot);
-    }
-
-    public Set<Bot> getView() {
-        return bots;
     }
 
     public int getX() {

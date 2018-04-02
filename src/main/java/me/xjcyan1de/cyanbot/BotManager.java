@@ -1,13 +1,11 @@
 package me.xjcyan1de.cyanbot;
 
 import me.xjcyan1de.cyanbot.config.Config;
-import me.xjcyan1de.cyanbot.utils.Schedule;
-import me.xjcyan1de.cyanbot.world.World;
+import me.xjcyan1de.cyanbot.gui.MainFrame;
+import me.xjcyan1de.cyanbot.logger.BotLogger;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,19 +25,16 @@ public class BotManager {
         this.config = config;
 
         Schedule.timer(() -> {
-            final Map<String, Bot> botMap = this.getBotMap();
             for (Bot bot : new ArrayList<>(botMap.values())) {
                 if (bot.isClose()) {
-                    botMap.remove(bot.getUsername());
+                    logger.severe("Бот " + bot.getUsername() + " закрыл соедиение, удаляем его.");
+                    this.onDisconnectBot(bot);
                 }
             }
         }, 1, 1, TimeUnit.SECONDS);
 
-        Schedule.timer(()->{
-            serverMap.values()
-                    .stream()
-                    .map(Server::getWorld)
-                    .forEach(World::checkRemoveChunks);
+        Schedule.timer(() -> {
+            serverMap.values().forEach(this::checkReleaseResources);
         }, 10, 10, TimeUnit.SECONDS);
     }
 
@@ -47,21 +42,45 @@ public class BotManager {
         return config;
     }
 
-    public void connectBot(Bot bot, String ipText) {
-        if (!botMap.containsKey(bot.getUsername())) {
-            botMap.put(bot.getUsername(), bot);
-            bot.setServer(serverMap.computeIfAbsent(ipText, key->new Server(new World())));
-            service.submit(bot::startBot);
-        }
+    public void connectBot(String ipText, String name, List<String> replaceCommand, MainFrame mainFrame) {
+        service.submit(() -> {
+            if (!botMap.containsKey(name)) {
+                try {
+                    final String[] ipPort = ipText.split(":");
+                    Server server = serverMap.computeIfAbsent(ipText, key -> new Server(logger, ipText, this));
+                    final Bot bot = new Bot(this, mainFrame, new BotLogger(name, logger), name,
+                            ipPort[0], ipPort.length > 1 ? Integer.parseInt(ipPort[1]) : 25565,
+                            server);
+                    bot.setJoinCommands(replaceCommand);
+                    botMap.put(bot.getUsername(), bot);
+                    bot.startBot();
+                } catch (Exception e) {
+                    logger.severe("Ошибка при добавлении бота");
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public Bot getBot(String nameText) {
         return botMap.get(nameText);
     }
 
-    public void disconnectBot(Bot bot) {
+    public void onDisconnectBot(Bot bot) {
+        Schedule.later(() -> disconnectBot(bot), 50);
+
         botMap.remove(bot.getUsername());
-        service.submit(()-> bot.getClient().getSession().disconnect("Final"));
+        bot.getWorld().onDisconnect(bot);
+
+        this.checkReleaseResources(bot.getServer());
+    }
+
+    private void checkReleaseResources(Server server) {
+        if (server.getBots().isEmpty()) {
+            server.getWorld().clearAll();
+        } else {
+            server.getWorld().checkReleaseResources();
+        }
     }
 
     public boolean isConnected(String name) {
@@ -78,5 +97,13 @@ public class BotManager {
 
     public Map<String, Bot> getBotMap() {
         return botMap;
+    }
+
+    public void disconnectBot(Bot bot) {
+        service.submit(() -> {
+            if (!bot.isClose()) {
+                bot.getClient().getSession().disconnect("Final");
+            }
+        });
     }
 }

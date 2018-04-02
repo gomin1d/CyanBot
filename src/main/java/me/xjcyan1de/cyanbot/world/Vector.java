@@ -1,5 +1,7 @@
 package me.xjcyan1de.cyanbot.world;
 
+import org.apache.commons.math3.util.FastMath;
+
 public class Vector {
     private double x;
     private double y;
@@ -63,7 +65,7 @@ public class Vector {
     }
 
     public double size() {
-        return Math.sqrt(this.sizeSquared());
+        return FastMath.sqrt(this.sizeSquared());
     }
 
     public Vector norm() {

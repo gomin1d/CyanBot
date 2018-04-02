@@ -4,7 +4,7 @@ import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 
 import java.util.LinkedList;
 import java.util.List;

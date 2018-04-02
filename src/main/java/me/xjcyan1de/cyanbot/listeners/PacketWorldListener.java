@@ -7,8 +7,6 @@ import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerKeepAlivePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEffectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.*;
@@ -17,9 +15,8 @@ import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import me.xjcyan1de.cyanbot.Bot;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 import me.xjcyan1de.cyanbot.world.Block;
-import me.xjcyan1de.cyanbot.world.Chunk;
 import me.xjcyan1de.cyanbot.world.Location;
 
 public class PacketWorldListener extends SessionAdapter {
@@ -49,12 +46,11 @@ public class PacketWorldListener extends SessionAdapter {
                 //bot.groundHandler.move(location);
             } else if (packetHandle instanceof ServerChunkDataPacket) {
                 ServerChunkDataPacket packet = (ServerChunkDataPacket) packetHandle;
-                bot.getWorld().mergeChunk(bot, packet.getColumn());
+                bot.getWorld().onLoadChunk(bot, packet.getColumn());
 
             } else if (packetHandle instanceof ServerUnloadChunkPacket) {
                 ServerUnloadChunkPacket packet = (ServerUnloadChunkPacket) packetHandle;
-                Chunk chunk = bot.getWorld().getChunkAt(packet.getX(), packet.getZ());
-                bot.getWorld().removeView(bot, chunk);
+                bot.getWorld().onUnloadChunk(bot, packet.getX(), packet.getZ());
 
             } else if (packetHandle instanceof ServerPlayerHealthPacket) {
                 ServerPlayerHealthPacket packet = (ServerPlayerHealthPacket) packetHandle;
@@ -94,7 +90,7 @@ public class PacketWorldListener extends SessionAdapter {
 
     @Override
     public void disconnected(DisconnectedEvent event) {
-        bot.getWorld().removeViewAll(bot);
+//        bot.getWorld().onDisconnect(bot);
 
         System.out.println(bot.getUsername() + " ✖ " + Message.fromString(event.getReason()).getFullText());
         bot.stopBot();

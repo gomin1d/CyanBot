@@ -21,7 +21,7 @@ public class CloseConnectionListener extends SessionAdapter {
 
     @Override
     public void disconnecting(DisconnectingEvent event) {
-        botManager.disconnectBot(bot);
+        botManager.onDisconnectBot(bot);
         logger.info("Disconnect: " + event.getReason() + (event.getCause() != null ? (
                 "(" + event.getCause().getClass().getName() + ": " + event.getCause().getMessage() + ")"
                 ) : ""));

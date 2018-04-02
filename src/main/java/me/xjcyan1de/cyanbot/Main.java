@@ -25,12 +25,6 @@ public class Main {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null); // по центу экрана
         mainFrame.setVisible(true);
-
-        try {
-            Test.main();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
     }
 
     private static void setUTF8() throws NoSuchFieldException, IllegalAccessException {

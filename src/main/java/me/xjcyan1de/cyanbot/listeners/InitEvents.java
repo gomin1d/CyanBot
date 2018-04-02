@@ -7,7 +7,7 @@ import me.xjcyan1de.cyanbot.Server;
 import me.xjcyan1de.cyanbot.config.Config;
 import me.xjcyan1de.cyanbot.events.PlayerChatEvent;
 import me.xjcyan1de.cyanbot.listeners.event.*;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 import me.xjcyan1de.cyanbot.utils.StringUtilsMy;
 import org.apache.commons.lang3.StringUtils;
 
@@ -86,11 +86,6 @@ public class InitEvents implements Listener {
         }
     }
 
-
-    @EventHandler
-    public void onChat(PlayerChatEvent event) {
-        System.out.println("игрок " + event.getSender() + " сообщение: " + event.getMessage());
-    }
 
     private static class PatternChatBetween implements Server.PatternChat {
 

@@ -1,6 +1,8 @@
 package me.xjcyan1de.cyanbot.world;
 
-public class Location {
+import org.apache.commons.math3.util.FastMath;
+
+public class Location implements Cloneable {
 
     private double x;
     private double y;
@@ -49,15 +51,15 @@ public class Location {
     }
 
     public int getBlockX() {
-        return (int) Math.floor(x);
+        return (int) FastMath.floor(x);
     }
 
     public int getBlockY() {
-        return (int) Math.floor(y);
+        return (int) FastMath.floor(y);
     }
 
     public int getBlockZ() {
-        return (int) Math.floor(z);
+        return (int) FastMath.floor(z);
     }
 
     public float getYaw() {
@@ -95,10 +97,31 @@ public class Location {
         double dx = x - loc.getX();
         double dy = y - loc.getY();
         double dz = z - loc.getZ();
-        double result = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        double result = FastMath.sqrt(dx * dx + dy * dy + dz * dz);
         return result < dist;
     }
 
+    private final double PImult2 = 6.283185307179586D;
+
+    /**
+     * Установить направление возляда по этому вектору
+     */
+    public Location setDir(double x, double y, double z) {
+        if ((x == 0.0D) && (z == 0.0D)) {
+            this.pitch = (y > 0.0D ? -90.0F : 90.0F);
+            return this;
+        }
+        double theta = FastMath.atan2(-x, z);
+        this.yaw = ((float) Math.toDegrees((theta + PImult2) % PImult2));
+
+        double x2 = x * x;
+        double z2 = z * z;
+        double xz = FastMath.sqrt(x2 + z2);
+        this.pitch = ((float) FastMath.toDegrees(Math.atan(-y / xz)));
+        return this;
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public Location clone() {
         return new Location(x, y, z);

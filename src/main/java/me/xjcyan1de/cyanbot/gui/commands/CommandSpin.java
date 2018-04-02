@@ -4,7 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import me.xjcyan1de.cyanbot.Bot;
 import me.xjcyan1de.cyanbot.Main;
-import me.xjcyan1de.cyanbot.utils.Schedule;
+import me.xjcyan1de.cyanbot.utils.schedule.Schedule;
 import me.xjcyan1de.cyanbot.world.Location;
 
 import javax.swing.*;
