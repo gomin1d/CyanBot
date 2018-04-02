@@ -45,6 +45,7 @@ public class ConfigSavedJFrameData {
         ip.setText(history.get(0));
 
         mainFrame.getAutoJoin().setSelected(config.getOrSet("auto-join", false));
+        mainFrame.getDeplayRelogin().setText(config.getOrSet("delay-relogin", "2000"));
     }
 
     @SuppressWarnings("unchecked")
@@ -85,6 +86,10 @@ public class ConfigSavedJFrameData {
 
         mainFrame.getAutoJoin().addItemListener(e->{
             config.setAndSave("auto-join", e.getStateChange() == ItemEvent.SELECTED);
+        });
+
+        mainFrame.getDeplayRelogin().addActionListener(e -> {
+            config.setAndSave("delay-relogin", mainFrame.getDeplayRelogin().getText());
         });
     }
 }
