@@ -17,9 +17,9 @@ public class Main {
 
         final Logger logger = LoggerInstaller.create("CyanBot", "CyanBot.log");
 
-        manager = new BotManager(logger);
 
         final Config config = new Config("config.yml");
+        manager = new BotManager(logger, config);
 
         mainFrame = new MainFrame(config, manager, logger);
         mainFrame.pack();

@@ -1,7 +1,7 @@
 package me.xjcyan1de.cyanbot.listeners.event;
 
-import com.sun.istack.internal.NotNull;
 import me.xjcyan1de.cyanbot.utils.ReflectUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -44,7 +44,6 @@ public class EventSystem {
                     final Consumer<Object> consumer = ReflectUtils.createConsumer(listener, method);
 
                     events.add(new RegisterEvent(method.getParameterTypes()[0], consumer, listener, eventHandler, method));
-                    System.out.println("REG: " + method);
                 } catch (Exception e) {
                     logger.severe("Ошибка регистрации эвента " + method);
                     e.printStackTrace();

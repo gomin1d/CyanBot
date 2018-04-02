@@ -10,7 +10,6 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.event.session.SessionListener;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
-import com.sun.istack.internal.Nullable;
 import me.xjcyan1de.cyanbot.events.GenerateAccessKeyEvent;
 import me.xjcyan1de.cyanbot.events.BotChatEvent;
 import me.xjcyan1de.cyanbot.gui.MainFrame;
@@ -21,6 +20,7 @@ import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.*;
 import me.xjcyan1de.cyanbot.world.Vector;
 
+import javax.annotation.Nullable;
 import java.net.Proxy;
 import java.util.*;
 import java.util.logging.Logger;
@@ -37,22 +37,24 @@ public class Bot {
     private BoundBox boundBox;
     private boolean onGround = true;
 
-    private World world;
+    private Server server;
     private Location loc = new Location(0, 0, 0);
     private Vector speed = new Vector();
 
     private List<Handler> handlers = new ArrayList<>();
     private List<SessionListener> listeners = new ArrayList<>();
-
-    private TimerTask timerTask;
-    private boolean debug = false;
-
-    private Logger logger;
     private EventSystem eventSystem;
+    private TimerTask timerTask;
+
+    private boolean debug = false;
+    private BotManager botManager;
+    private Logger logger;
 
     private String accessKey;
+    private List<String> joinCommands;
 
-    public Bot(BotManager manager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
+    public Bot(BotManager botManager, MainFrame mainFrame, Logger logger, String username, String host, int port) {
+        this.botManager = botManager;
         this.logger = logger;
         this.protocol = new MinecraftProtocol(username);
         this.username = username;
@@ -61,20 +63,24 @@ public class Bot {
 
         this.registerEvents();
         this.registerHandlers();
-        this.registerListeners(mainFrame, manager);
+        this.registerListeners(mainFrame, botManager);
     }
 
-    void setWorld(World world) {
-        this.world = world;
+    public BotManager getBotManager() {
+        return botManager;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
     }
 
     private void registerEvents() {
-        this.eventSystem.registerLisneter(new ChatEvents(this));
+        this.eventSystem.registerLisneter(new InitEvents(this));
+        this.listeners.add(new ChatListener(this));
     }
 
     private void registerListeners(MainFrame mainFrame, BotManager manager) {
         this.listeners.add(new PacketWorldListener(this));
-        this.listeners.add(new ChatListener(this));
         this.listeners.add(new ChatToGuiListener(mainFrame));
         this.listeners.add(new CloseConnectionListener(this, manager, logger));
         this.listeners.add(new BotListener(this, eventSystem)); // для системы иветов
@@ -97,11 +103,16 @@ public class Bot {
     }
 
     public void startBot() {
-        try {
-            connectServer();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
+
+        this.boundBox = new BoundBox(0.6, 1.8);
+
+        listeners.forEach(sessionAdapter -> {
+            this.getClient().getSession().addListener(sessionAdapter);
+        });
+
+        this.client.getSession().connect();
+
         this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
     }
 
@@ -112,12 +123,10 @@ public class Bot {
         // this.getWorld().clearChunks(); // зачем?
     }
 
-    private boolean beforeConnect = true;
-
     public void sendPacket(Packet packet) {
-        if (!(packet instanceof ClientPlayerPositionRotationPacket || packet instanceof ClientChatPacket)) {
+       /* if (!(packet instanceof ClientPlayerPositionRotationPacket || packet instanceof ClientChatPacket)) {
             System.out.println(username + " > " + packet.toString());
-        }
+        }*/
         getClient().getSession().send(packet);
     }
 
@@ -126,38 +135,6 @@ public class Bot {
         if (!event.isCancelled()) {
             sendPacket(new ClientChatPacket(event.getMessage()));
         }
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public Location getLoc() {
-        return loc;
-    }
-
-    public void setLoc(Location loc) {
-        this.loc.set(loc);
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public BoundBox getBoundBox() {
-        return boundBox;
-    }
-
-    public boolean isOnGround() {
-        return onGround;
-    }
-
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
-    }
-
-    public Client getClient() {
-        return client;
     }
 
     public void onJoin(ServerJoinGamePacket packet) {
@@ -170,10 +147,13 @@ public class Bot {
         }
     }
 
+    public Server getServer() {
+        return server;
+    }
 
     public Block getSolidBlock() {
         for (double y = loc.getY(); y > 0; y -= 0.1) {
-            Block block = world.getBlockAt(loc.getBlockX(), (int) Math.floor(y), loc.getBlockZ());
+            Block block = server.getWorld().getBlockAt(loc.getBlockX(), (int) Math.floor(y), loc.getBlockZ());
             if (block != null) {
                 if (block.getBoundBox().isSolid()) {
                     return block;
@@ -203,30 +183,12 @@ public class Bot {
         this.debug = debug;
     }
 
-    public void connectServer() {
-        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
-        this.client.getSession().connect();
-
-        this.boundBox = new BoundBox(0.6, 1.8);
-
-        listeners.forEach(sessionAdapter -> {
-            this.getClient().getSession().addListener(sessionAdapter);
-        });
-
-        this.getClient().getSession().addListener(new SessionAdapter() {
-            @Override
-            public void connected(ConnectedEvent event) {
-                beforeConnect = false;
-            }
-        });
-    }
-
     public String getAccessKey() {
         return accessKey;
     }
 
     public boolean isClose() {
-        return !beforeConnect && !client.getSession().isConnected();
+        return !client.getSession().isConnected();
     }
 
     @Nullable
@@ -253,7 +215,6 @@ public class Bot {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(username);
     }
 
@@ -263,5 +224,45 @@ public class Bot {
                 "entityId=" + entityId +
                 ", username='" + username + '\'' +
                 '}';
+    }
+
+    public void setJoinCommands(List<String> joinCommands) {
+        this.joinCommands = joinCommands;
+    }
+
+    public List<String> getJoinCommands() {
+        return joinCommands;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Location getLoc() {
+        return loc;
+    }
+
+    public void setLoc(Location loc) {
+        this.loc.set(loc);
+    }
+
+    public World getWorld() {
+        return server.getWorld();
+    }
+
+    public BoundBox getBoundBox() {
+        return boundBox;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public Client getClient() {
+        return client;
     }
 }

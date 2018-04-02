@@ -1,5 +1,6 @@
 package me.xjcyan1de.cyanbot;
 
+import me.xjcyan1de.cyanbot.config.Config;
 import me.xjcyan1de.cyanbot.utils.Schedule;
 import me.xjcyan1de.cyanbot.world.World;
 
@@ -15,13 +16,15 @@ import java.util.logging.Logger;
 public class BotManager {
     private ExecutorService service = Executors.newFixedThreadPool(2);
 
-    private Map<String, World> worldMap = new HashMap<>();
+    private Map<String, Server> serverMap = new HashMap<>();
 
     private Map<String, Bot> botMap = new HashMap<>();
     private Logger logger;
+    private Config config;
 
-    public BotManager(Logger logger) {
+    public BotManager(Logger logger, Config config) {
         this.logger = logger;
+        this.config = config;
 
         Schedule.timer(() -> {
             final Map<String, Bot> botMap = this.getBotMap();
@@ -33,15 +36,21 @@ public class BotManager {
         }, 1, 1, TimeUnit.SECONDS);
 
         Schedule.timer(()->{
-            worldMap.values()
+            serverMap.values()
+                    .stream()
+                    .map(Server::getWorld)
                     .forEach(World::checkRemoveChunks);
         }, 10, 10, TimeUnit.SECONDS);
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public void connectBot(Bot bot, String ipText) {
         if (!botMap.containsKey(bot.getUsername())) {
             botMap.put(bot.getUsername(), bot);
-            bot.setWorld(worldMap.computeIfAbsent(ipText, key->new World()));
+            bot.setServer(serverMap.computeIfAbsent(ipText, key->new Server(new World())));
             service.submit(bot::startBot);
         }
     }
@@ -59,8 +68,8 @@ public class BotManager {
         return botMap.containsKey(name) && !botMap.get(name).isClose();
     }
 
-    public Map<String, World> getWorldMap() {
-        return worldMap;
+    public Map<String, Server> getServerMap() {
+        return serverMap;
     }
 
     public Collection<Bot> getBots() {
