@@ -43,8 +43,8 @@ public class Test  {
             String name = "CyanBot" + new Random().nextInt(10000);
             System.out.println("Join " + name);
             final Bot bot = new Bot(manager, mainFrame,
-                    new BotLogger(name, logger), name, "lgn.z904095z.bget.ru", 25565);
-            manager.connectBot(bot, "lgn.z904095z.bget.ru:25565");
+                    new BotLogger(name, logger), name, "mc.justvillage.ru", 25565);
+            manager.connectBot(bot, "mc.justvillage.ru");
         }, 1000, 1000);
     }
 
