@@ -2,12 +2,10 @@ package me.xjcyan1de.cyanbot.gui.commands
 
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
-import me.xjcyan1de.cyanbot.Bot
 import me.xjcyan1de.cyanbot.Main
 
 import javax.swing.*
 import java.awt.*
-import java.awt.event.ActionListener
 
 class CommandChat : Command("Сообщение в чат") {
 
