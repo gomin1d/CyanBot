@@ -20,5 +20,6 @@ public class CommandListHandler {
         new CommandWalk().register(listModel);
         new CommandSpin().register(listModel);
         new CommandSelectSlot().register(listModel);
+        new CommandUseItem().register(listModel);
     }
 }
