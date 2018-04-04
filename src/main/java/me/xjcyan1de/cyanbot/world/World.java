@@ -71,7 +71,7 @@ public class World {
 
     public void onLoadChunk(Bot bot, Column column) {
         final ChunkCoord chunkCoord = toKey(column.getX(), column.getZ());
-        final Chunk chunk = chunkMap.computeIfAbsent(chunkCoord, key->new Chunk(this, key.x, key.z));
+        final Chunk chunk = chunkMap.computeIfAbsent(chunkCoord, key -> new Chunk(this, key.x, key.z));
         chunk.addView(bot);
 
         chunk.merge(column);
@@ -129,6 +129,7 @@ public class World {
     public Map<ChunkCoord, Chunk> getChunkMap() {
         return chunkMap;
     }
+
     public Entity getPlayer(String name) {
         final GameProfile profile = gameProfiles.stream()
                 .filter(gameProfile -> gameProfile.getName().equalsIgnoreCase(name))
@@ -137,11 +138,7 @@ public class World {
             return null;
         }
 
-        final Entity entity = this.getEntityByUUID(profile.getId(), EntityType.PLAYER);
-        if (entity != null) {
-            return entity;
-        }
-        return null;
+        return this.getEntityByUUID(profile.getId(), EntityType.PLAYER);
     }
 
     public Int2ObjectMap<Entity> getEntityMap() {

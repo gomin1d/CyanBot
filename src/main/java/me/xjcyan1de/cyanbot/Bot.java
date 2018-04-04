@@ -56,6 +56,7 @@ public class Bot {
 
     private String accessKey;
     private List<String> accessPlayers = new ArrayList<>(1);
+    private boolean close = false;
 
     public Bot(BotManager botManager, MainFrame mainFrame, Logger logger, String username, String host, int port, Server server) {
         this.botManager = botManager;
@@ -111,16 +112,26 @@ public class Bot {
     }
 
     public void startBot() {
-        logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
+        try {
+            logger.info("Пробуем подключится к " + client.getHost() + ":" + client.getPort() + "...");
 
-        this.boundBox = new BoundBox(0.6, 1.8);
+            this.boundBox = new BoundBox(0.6, 1.8);
 
-        this.client.getSession().connect();
+            this.client.getSession().connect();
 
-        this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
+            this.timerTask = Schedule.timer(this::onUpdate, 50, 50);
+        } catch (Exception e) {
+            close = true;
+            throw e;
+        }
     }
 
     public void stopBot() {
+        close = true;
+        if (this.client.getSession().isConnected()) {
+            Schedule.later(()->this.client.getSession().disconnect("Final Kick"), 50);
+        }
+
         Schedule.cancel(timerTask);
     }
 
@@ -195,7 +206,7 @@ public class Bot {
     }
 
     public boolean isClose() {
-        return !client.getSession().isConnected();
+        return close && !client.getSession().isConnected();
     }
 
     @Nullable
