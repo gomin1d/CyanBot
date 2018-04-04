@@ -101,7 +101,7 @@ public class Location implements Cloneable {
         return result < dist;
     }
 
-    private final double PImult2 = 6.283185307179586D;
+    private static final double PImult2 = 6.283185307179586D;
 
     /**
      * Установить направление возляда по этому вектору

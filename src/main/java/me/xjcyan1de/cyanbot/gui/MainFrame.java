@@ -111,11 +111,9 @@ public class MainFrame extends JFrame {
 
             final JTextField status = mainFrame.getStatus();
             if (!connected) {
-                status.setText("Не подключен");
-                status.setBackground(Color.decode("#ff5050"));
+                BotStatus.CONNECTED.setStatus();
             } else {
-                status.setText("Подключен");
-                status.setBackground(Color.decode("#33cc33"));
+                BotStatus.DISCONECTED.setStatus();
             }
 
             sendMessage.setEnabled(connected);
