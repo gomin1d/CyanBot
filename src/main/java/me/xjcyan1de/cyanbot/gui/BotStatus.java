@@ -7,7 +7,7 @@ import java.awt.*;
 
 public enum BotStatus {
     CONNECTED("Подключен", Color.decode("#4CAF50")),
-    DISCONECTED("Не подключен", Color.decode("#FF5252"));
+    DISCONNECTED("Не подключен", Color.decode("#FF5252"));
 
     private final String text;
     private final Color color;

@@ -109,11 +109,11 @@ public class MainFrame extends JFrame {
 
             boolean connected = manager.isConnected(name.getText());
 
-            final JTextField status = mainFrame.getStatus();
-            if (!connected) {
+//            final JTextField status = mainFrame.getStatus();
+            if (connected) {
                 BotStatus.CONNECTED.setStatus();
             } else {
-                BotStatus.DISCONECTED.setStatus();
+                BotStatus.DISCONNECTED.setStatus();
             }
 
             sendMessage.setEnabled(connected);
